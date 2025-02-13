@@ -1,0 +1,182 @@
+body {
+  background-color: black;
+}
+
+.container{
+  width: 100%;
+}
+
+.map {
+  margin: 0 auto;
+  border: 5px solid red;
+  max-width: 40%;
+  position: relative;
+}
+
+.map img {
+  max-width: 100%;
+  display: block;
+}
+
+.home_link {
+  text-align: center;
+  font-size: 24px;
+  color: white !important;
+}
+
+a.white {
+  color: white;
+}
+
+.box {
+  width: 6%;
+  height: 4%;
+  background-image: url(map-pin-red.svg);
+  background-position:  top center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  position: absolute;
+}
+
+.box:hover>.pin-text,
+.box:focus>.pin-text {
+  display: block;
+}
+
+.pin-text {
+  cursor: pointer;
+  z-index: 1000000;
+  position: absolute;
+  top: 10%;
+  left: 75%;
+  display: none;
+  color: yellow;
+  background-color: black;
+  padding:10px;
+  width: 500px;
+}
+
+#pin-1 {
+  top: 45%;
+  left: 18%;
+}
+
+#pin-2 {
+  top: 50%;
+  left: 26%;
+}
+
+#pin-3 {
+  top: 45%;
+  left: 31%;
+}
+
+#pin-4 {
+  top: 54%;
+  left: 43%;
+}
+
+#pin-5 {
+  top: 56%;
+  left: 40%;
+}
+
+#pin-6 {
+  top: 55%;
+  left: 36%;
+}
+
+#pin-7 {
+  top: 58%;
+  left: 50%;
+}
+
+#pin-8 {
+  top: 62%;
+  left: 68%;
+}
+
+#pin-9 {
+  top: 27%;
+  left: 60%;
+}
+
+#pin-10 {
+  top: 23%;
+  left: 66%;
+}
+
+#pin-11 {
+  top: 23%;
+  left: 50%;
+}
+
+#pin-12 {
+  top: 36%;
+  left: 51%;
+}
+
+#pin-13 {
+  top: 35%;
+  left: 44%;
+}
+
+#pin-14 {
+  top: 38%;
+  left: 44%;
+}
+
+#pin-15 {
+  top: 43%;
+  left: 58%;
+}
+
+#pin-16 {
+  top: 45%;
+  left: 59%;
+}
+
+#pin-17 {
+  top: 47%;
+  left: 57%;
+}
+
+#pin-18 {
+  top: 48%;
+  left: 65%;
+}
+
+#pin-19 {
+  top: 35%;
+  left: 25%;
+}
+
+#pin-20 {
+  top: 33%;
+  left: 76%;
+}
+
+#pin-21 {
+  top: 78.5%;
+  left: 82.5%;
+}
+
+#pin-22 {
+  top: 21%;
+  left: 34%;
+}
+
+#pin-23 {
+  top: 24%;
+  left: 44%;
+}
+
+#pin-24 {
+  top: 20%;
+  left: 40%;
+}
+
+#pin-25 {
+  top: 59%;
+  left: 75%;
+}

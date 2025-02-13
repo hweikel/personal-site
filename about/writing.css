@@ -1,0 +1,86 @@
+body {
+	background-color: black;
+	font-family: times;
+	color: blue;
+	text-align: center;
+}
+
+h1 {
+	font-weight: normal;
+}
+
+a {
+	text-decoration: none;
+	color: inherit;
+}
+
+p {
+	width: 800px;
+	margin: 0 auto;
+	text-align: left;
+}
+
+p.prose {
+	text-indent: 40px;
+}
+
+p.stanza {
+	width: 500px;
+}
+
+p.stanza_number {
+	text-align: center;
+}
+
+p.intro {
+	font-size: 22px;
+}
+
+.return {
+	margin-top: -.5%;
+	margin-bottom: 1%;
+	text-align: center;
+	font-size: 28pt;
+	color: orange;
+}
+
+.poetry_list {
+	font-size: 20pt;
+	line-height: 150%;
+}
+
+p.poem-title {
+	margin: 0 auto;
+	display: block;
+	font-size: 22px;
+	font-style: italic;
+}
+
+.poetry {
+	margin: 0 auto;
+	width: 800px;
+	text-align: left;
+	font-size: 18pt;
+}
+
+.facing-poetry {
+	display: block;
+	margin: 0 auto;
+	width: 705px;
+
+	column-count: 2;
+	column-gap: 150px;
+
+	-webkit-column-count: 2;
+	-webkit-column-gap: 80px;
+
+	-moz-column-count: 2;
+	-moz-column-gap: 80px;
+
+	font-size: 20px;
+}
+
+.center {
+	font-size: 22pt;
+}
+
