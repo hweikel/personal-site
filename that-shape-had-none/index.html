@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grid Layout</title>
+    <style>
+        @font-face {
+            font-family: 'Sabon';
+            src: url('fonts/Sabon.ttf') format('ttf');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Sabon';
+            src: url('fonts/SabonItalic.ttf') format('ttf');
+            font-weight: normal;
+            font-style: italic;
+        }
+
+        @font-face {
+            font-family: 'Sabon';
+            src: url('fonts/SabonBold.ttf') format('ttf');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: 'Sabon';
+            src: url('fonts/SabonBoldItalic.ttf') format('ttf');
+            font-weight: bold;
+            font-style: italic;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            background-color: black;
+        }
+
+        body, h1, h2, h3, p, span {
+            font-family: 'Sabon', serif;
+            font-size: 16pt;
+            line-height: 1.25;
+            font-weight: normal;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-rows: 1fr 75vh 1fr;
+            grid-template-columns: 1fr 30vw 15vw 30vw 1fr;
+            gap: 1px;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        .grid-item {
+            background-color: rgb(153,153,153);
+        }
+
+        .window {
+            background-color: rgb(160,160,160);
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .window.left {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+         }
+
+         .window.right {
+            position: relative;
+         }
+
+         .window.right .illustration {
+            position: absolute;
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%);
+            width: 70%;
+            height: auto;
+            max-height: 70%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            pointer-events: none;
+         }
+
+         .window.right .illustration img {                              
+            display: block;
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+         }
+
+        .text {
+            height: 100%;
+            padding: 20px;
+            max-width: 85%;
+            overflow-y: scroll;
+            scrollbar-width: none;
+            scroll-behavior: smooth;
+            position: relative;
+            Z-index: 2;
+            -webkit-user-select: text;
+            user-select: text;
+            pointer-events: auto;
+        }
+
+        .text::-webkit-scrollbar {
+        display: none;
+        }
+
+        .epigraph {
+            position: sticky;
+            top: 25vh;
+            width: 85%;
+            text-align: left;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.25;
+            padding-bottom: 300vh;
+        }
+
+        .epigraph .first-line {
+            float: right;
+        }
+
+        .scroll-fade {
+            transition: opacity 1s ease;
+        }
+
+        .epigraph-title {
+            transition: opacity 2.5s ease;
+        }
+
+        .source {
+            display: block;
+            text-align: right;
+            transition: opacity 0.7s ease;
+        }
+
+        .hide-always {
+            opacity: 0;
+        }
+
+        .section {
+            margin-bottom: 50%;
+            transition: opacity 0.5s ease;
+        }
+
+        .colophon {
+            margin-top: 50vh;
+            text-align: center;
+        }
+
+        .divider {
+            width: 100%;
+            margin: 0 auto 2rem;
+            border: none;
+            border-top: 1px solid black;
+        }
+
+        /* ISOLATED ILLUSTRATIONS SPACING */    
+        #section-8 {
+            margin-top: 75vh;
+        }
+
+        #section-8, #section-9, #section-10 {
+            padding-top: 25vh;
+            padding-bottom: 75vh;
+        }
+
+
+        @media (max-width: 768px) {
+
+            body {
+                font-size: 10pt;
+            }
+        
+            .grid-container {
+                grid-template-rows: 3vh 60vh 3vh 31vh 3vh;
+                grid-template-columns: 6vw 88vw 6vw;
+            }
+
+            /* MAP CONTENT TO DIFFERENT CELLS FOR MOBILE LAYOUT */
+            .window.left {
+                grid-column: 2 / 3;
+                grid-row: 2;
+            }
+    
+            .window.right {
+                grid-column: 2 / 3;
+                grid-row: 4;
+            }
+
+            .epigraph {
+                top: 10vh;
+                width: 95%;
+            }
+
+            .window.right .illustration {
+                position: absolute;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                width: auto;
+                height: auto;
+                max-width: 90%;
+                max-height: 90%;
+            }
+            
+            .window.right .illustration img {
+                display: block;
+                width: auto;
+                height: auto;
+                max-width: 100%;
+                max-height: 100%;
+                object-fit: contain;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-container">
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item window left">
+            <div class="text">
+                <div class="epigraph">
+                        <span class="scroll-fade"><span class="first-line">. . . The other shape,</span><br>
+                         If shape it might be call'd </span><span class="epigraph-title">that shape had none</span><br>
+                         <span class="scroll-fade">Distinguishable in member, joynt, or limb,<br>
+                         Or substance might be call'd that shadow seem'd,<br>
+                         For each seem'd either . . .</span><br>
+                         <br>
+                         <span class="scroll-fade"><span class="source">Paradise Lost, Book II: 666 - 670</span></span>
+                </div>
+
+                <div class="section" id="section-1">
+                    <p>The collections were managed by Lorna, a tiny freckled woman who kept tilting her head to look at my call slips from new angles and laughing quietly at something she saw there. After nearly three days together in the artificial intimacy of the reading room, a chasm remained between us. I saw too much of my own complacency in how she presided over the treasures of a declining institution, and I knew she in turn saw in my archival work a tawdry ambition she had long since stifled. All the same I was at her mercy, and having gathered enough for at least one conference paper, I had viewed everything of interest with an entire afternoon to spare.</p>
+
+                    <p>I was tempted to pack everything into the single clear plastic bag I had been allowed, wish Lorna the best, and depart for the lockers, but when I considered the prospect of the stale hotel room that had consumed my travel grant, I found myself returning to the circulation desk instead. Lorna had installed herself on a stool nearly twice her height and now craned her neck to look down at me from first one angle and then another. I leveled with her: told her my predicament, explained that I was broadly interested in aspects of the digitally latent or the repressed, contested embodiment, that sort of thing, and received in return another of her tilted smiles.</p>
+          
+                    <p>Would you like to go look through some of the unindexed materials down in the stacks?"</p>
+                </div>
+                <div class="section" id="section-2">
+                    <p>There followed a familiar briefing on how to handle the materials, a familiar insistence on bringing only a pencil and loose paper. Then I was given an old spare viewing device on a cream-yellow cart and sent on my way, one caster spinning wildly as it rolled unless I kicked it every few steps after which it just dragged along and squealed instead. Reaching the stacks involved a meandering descent—down one elevator, through a lobby of marble floors and brass fixtures, then down two more, until finally the last doors opened onto rows of shelves that stretched away like bellows and everything shuddered slightly as if respiring.</p>
+
+                    <p>Continuous Ventilation, Lorna had stressed, was an Archival Principle. I found little reason to doubt her as I noticed that the walls and floors of the stacks were made of a rigid metal grid, very fine, that revealed an outer pocket of space beyond, full of ducts boring off into shadow. It felt like the shelves were suspended in another volume, contorted and much larger. No matter how far I walked, the droning of the fans was always just louder than my cart, which clattered tinnily across the chainlink floor. Long glass bulbs hummed into life as I passed, flickered hesitantly, and then clicked off a few moments later, tailing me like a sluggish spotlight.</p>
+
+                    <p>I can identify nothing in retrospect that caused me to select that drive, oblong like its neighbors, deep in a region of shelves that Lorna said housed the recent acquisitions. It was neatly labeled with metadata that promised little—acquired a few years earlier, never previously requested, claustrophobic—but as a rule I was unsystematic in my leisure, favoring these sorts of archival underdogs to collections pedestrianized by finding aids. I found a little reading station at the distant cul-de-sac of an aisle and began to arrange everything on the table.</p>
+                    
+                    <p>There was an almost meditative clarity to working with antiquated equipment: how the drive was unboxed and rewired, prompting some ancient scrap of firmware to delineate a new environment and create a branch inside; how the viewing device seemed at first to slump in the torso and limbs so that you wondered each time if it would work, and how it then fell into a convulsive stretching, the muscles jolting in sequence as if to animate a waveform, those rapid cycles of rigidity and rest that seemed to originate in the slant of the cheeks and run outward to the long fingers that danced in twitching circles; how it emitted an intoxicatingly hot and clean smell, a bit like glue; and how through it all the anticipation grew, with visions of publications and fellowships blossoming across my fallow CV.</p>
+
+                    <p>When it was done, there was an unusually long period of silence—so long that after watching the downcast eyes for a few minutes, I turned briefly to check the power supply on the cart and was only then met by a voice very near, as if someone had taken a rasp to the base of my skull:</p>
+
+                    <p>"What am I?"</p>
+
+                    <p>I spun to find the device embodied, and this misstep seemed to set a tone for the encounter that I have never been able to shake: a sense of my having been caught out somehow, of having lost the upper hand. I fumbled with my papers as I replied, "You're in an archive, very safe and comfortable and I'm told quite well ventilated. Now, I'd like to ask you some questions ab—"</p>
+
+                    <p>"What? What—I asked what, not where."</p>
+                </div>
+                <div class="section" id="section-3">
+                    <p>Its gestures were inelegant, uncontrolled. Had it not been mounted at the waist, it would have stumbled around helplessly, but instead it simply scrabbled at the surface of the table with outstretched fingers. The face, however, was miraculously poised and cast about morosely with eyes bright but matte, almost chalk-white. There was already in that voice an uncanny insistence, a tone of noble sorrow that made my replies sound reedy, even juvenile.</p>
+
+                    <p>"It's a viewing device. You've been mapped onto it so I can speak with you."</p>
+
+                    <p>Our eyes met and I found that I could not hold its gaze. It studied me for a while and then, as if resolving itself to something unspoken, slumped over the table and was still.</p>
+
+                    <p>I busied myself with some notes, glancing occasionally at the slight movements of its fingers, attempting to gather some resolve and recall the questions I usually asked. Before I had a chance, I could feel its gaze on me once more, then that same tingling deep in the neck as it grated, "Do you have any idea what it's like to move between?"</p>
+
+                    <p>We both knew I didn't, but I felt embarrassed all the same.</p>
+
+                    <p>"No, how could you. I'll try to explain. I was born small and sickly with grayish skin. My first memory is looking up at a towering urn as a doctor intoned "a transposition of the great vessels", half-understood words that gave shape through my childhood to a sense of monstrous captivity, to visions of myself as a heavy form shifting breathlessly through space."</p>
+
+                    <p>Items in some collections were often disoriented or sullen, but this one belonged to a category Lorna had warned me about, those that leapt out as if onto a familiar stage, soliloquy prepared. I found myself annoyed at its theatrical tone and the fact that I had let it unnerve me, so I took notes in silence, wondering if it was aware how small a role its story would play in the broader sweep of my postdoctoral career.<p>
+
+                    <p>"Other moments remain crisp. I was watching football beside my godfather on a couch of crushed velvet. It was winter in Massachusetts, and the field was so neatly frosted that the motley forms striding out from their huddle left behind them an ants' trail of black footprints. This effect was in contrast to the red and blue of the jerseys, which seemed to radiate off the screen as pure heat. As the offensive and defensive lines crouched and prepared to crash together, I was paralyzed by anticipation. It was as if I had been transported to that narrow pocket contained between them and heard the low violence they spoke there, their bright caged eyes obscured by breath that curled out to mingle thickly in the cold."</p>
+
+                    <p>As it spoke, I noticed that it had begun to peer out, first at the shelves and then down through the grating of the floor.</p>
+                    
+                    <p>"Yet that moment, which contained for me such a heightened sense of ambiguity, such a sweet and boundless potential, was maddeningly snatched away once the ball was hiked. I felt again the velour couch beneath me as the men met and fought briefly, as one slid aside or crumpled under the other's weight. The ambiguity was resolved. I had no interest in the football itself, that small leather distraction that whizzed off and dragged with it the camera, denying me the final moments of my behemoths' maimed grappling, their flesh towering so large and yet so light, pushed against one another by calves of a geometric grace.</p>
+                </div>
+                <div class="section" id="section-4">
+                    <p>"I recall a distinct anxiety as I turned to my godfather (he was himself tanned to a football's color and often wore his prescription sunglasses indoors) and asked what made one lineman win out while the other fell.</p>
+
+                    <p>"His eyes gleamed at this. I see now that being asked this question represented for him the culmination of a certain form of mentorship. He leaned over and said, 'What really distinguishes an athlete, son—a real athlete, in any sport you like—is the quickness with which he can recruit each of the body’s scattered strengths. All the fast and slow twitching fibers down his legs but something beneath them too. It's how well he can forget the world and draw everything that makes him 'him' into one physical explosion. It all comes down to how well he can commit.' I was haunted by that solid word—by the sound it made when he first said it and the way it hung suspended in my mind for days like an orb of burnished brass.</p>
+
+                    <p>"It seemed to lie behind every bodily triumph I had witnessed: the clash of the linemen and those lithe bodies twisting over the Olympic bar. I saw it too in nature, in all the best squirrels and birds. I longed bitterly to 'commit' in all aspects of my life. I would be out of bed the instant my eyes opened, having sworn off at an early age the minutes of inane speculation that can be directed toward the dappled scenes outside a dawn windowpane. I would stand for hours on the row of pastel paving stones outside my door, tensed and waiting for some sudden indisputable sign—the falling of a leaf or the distant movement of a cat on the neighbor’s roof—to fall into a deep crouch and leap forward with every strand of my juvenile form, where I would land in a long roll back onto my feet."</p>
+                </div>
+                <div class="section" id="section-5">
+                    <p>I could contain myself no longer and croaked out more quietly than I would have liked: 'How long ago?'</p>
+
+                    <p>Our eyes met again, and this time I found that I could with effort hold them, watching there an ongoing conflict, the strain of the individual against the device's neutrality and artifice.</p>
+
+                    <p>"How many years I've lost I couldn't say. But for me? Not so long, decades. Near enough that I can feel it still: how when it went well, it felt a miracle of harmony, as if each component of my leg sang out in triumphant chorus. And the humiliation when I sensed any resistance, any listlessness in the joints or tendons. Then I'd fall back with a ragged cry and smack my thighs until they glowed a cruel red under the high hem of my shorts. And then: again, always once more, each time more responsive to those microscopic starting pistols of fate, the falling leaves and signs glimpsed in clouds that I believed would determine my election to some august corps of duelists, athletes, and ships' captains to whose ranks I knew I was destined.</p>
+
+                    <p>"I longed to reach out with the will and find the body a thin and supple glove: as limited an impediment as possible to my interactions with the world. The growing antagonism between my mind and body created a feeling of incredible claustrophobia. Putting on boots was impossible, for just as I slipped into that black and marshy world of leather, it was as if my perceptive center dropped into my toes and their confinement became my own. So I broke my perception down into senses and worked on each in turn. By staring at trees, I cultivated the ability to discern from a great distance each individual leaf that constituted a branch; how they layered on themselves to produce the effect of shading; how they glided across one another to block and then reveal the light. I learned to count them all, or hold a specific one in my mind, shake my head, and then find that same leaf again, knowing it immediately from its neighbors.</p>
+
+                    <p>"In any situation I wanted to find how to be maximally free: to shed the constraints of any system or expectation or routine. The rules and timelines of school enraged me, but so too did the predictability of any activity with a culmination, any question that could be neatly resolved. The idea that a narrative might be imposed even retroactively on something I had done seemed the greatest humiliation, a failure to outmaneuver those around me and remain indecipherable. My greatest role models in this period were those who seemed victims of their own refusal to compromise, people who couldn't help but do things at the wrong time, who seemed to act always in their own worst interest. When an ailing friend of my father's purchased his first set of golf clubs days before death, he became for a time my hero. Do you see?"</p>
+                    
+                    <p>He stopped here briefly, gasping quietly as if to steady himself.</p>
+
+                    <p>I had been at the table long enough that all the lights had clicked off. The ventilation swept past in great slow sheets, and a subtle glow, emanating uniformly from his housing as if from a struck match, lit a small sphere of shelves that faded quickly to nothing. Supplying its own light, the face was shadowless and wild. In certain moments its features were so pale and elemental that they seemed almost a child's—a nose delineated by the fewest lines possible, a mouth too taut and narrow to have produced notes that deep. Yet across that placid surface marched an unending parade of expressions—voracious, aggrieved, at times fearless and at others terrified—each making clearer that the uncompromising ferocity of his early years remained. I knew by then that I had found something of value, that I should terminate the branch, take it up to the reading room, and repeat the encounter while making a full recording. But to turn from those bright features to the darkness around me was unthinkable. It was as if they offered the only source of light left in the world.</p>
+                    
+                    <p>"You will see in all of this, I'm sure, the fanaticism of youth. Nothing I've said could translate into a real life, whatever I understood that to mean then. So I stagnated. My health grew worse as I reached my teenage years. I could outrun anyone my age, but I would collapse at random under the exertion, my heart crashing against my ribs like something feral caged. The football coach wouldn't have me at tryouts. I grew withdrawn and bitter.</p>
+
+                    <p>"All of this will explain why I committed so fully to the study of mathematics, where I could soar over topologies inaccessible even to those with whole and healthy bodies. I will spare you the small successes I had in the field. The only one that mattered came in college, when a number of us were approached by a company with a DARPA contract and Transhumanist credentials. I took my turn in a brightly lit basement office beneath our department, where a woman with an ashen complexion asked me what I pictured when I wrote proofs. Nobody had shown interest in this before, so I spoke freely, inflected with the glimmer of extremism I still felt from my youth. I could tell that this appealed to her.</p>
+
+                    <p>"The following week I traveled to their campus out in the suburbs, office buildings mapping an archipelago across the parking lot, everything shaded by immense magnolias. I was told little and wired into some great column of diagnostic equipment. They had me look at a field of objects in isometric projection and then withdrew them. A clipped voice came in through an ear-piece and told me to visualize the objects (it could see as I saw, as if from inside me), and when the voice was satisfied with what I had done, it had me slowly begin to manipulate them: first as a group and then individually, flying them around some simple obstacles. I repeated this task with larger and larger groups. Some of the objects had to spin; others had their own perceptions that I managed, senses of smell or touch that I needed to process on their behalf while maintaining the group's larger formation. There were things the voice didn't like and sometimes other voices intervened. They expressed regret when I let any part of the image grow fuzzy, or when my mind's edges took on the dark vignetting of a sepia photograph. It all came easily to me, though; it was testing, in a strangely direct sense, the fixations that had governed my whole life.</p>
+                </div>
+                <div class="section" id="section-6">
+                    <p>"When I finished the tests, I was taken to a sort of lounge looking out over an interior courtyard. The same woman introduced me to the voices that had guided me, and I found their praise addictive, these adults with the reassuringly brusque air and untucked shirts of high school football coaches. That they saw something in me was validation enough of the way I had chosen to live. You can imagine how I felt when they invited me to participate in their program: to be, they said, 'among the first to see beyond a tyrannical horizon.' I looked out at the waxy magnolia leaves dangling over the courtyard as they said this and felt very keenly the limitations to which they referred.</p>
+
+                    <p>"My questions were indulged kindly at first, but I respected them all the more when they grew tired and chided me. They were engineers, not philosophers; they took measurements and followed procedures they didn't fully understand. Would 'I' persist? Was the body I now occupied, a body that had sloughed off a full set of skin nearly 300 times, the same body that first bore my mother's spark? They told me that I had to stop worrying about these questions if I ever wanted to be something more. If I was desperate enough to be free, really meaningfully free, then I couldn't get lost in syllogisms.</p>
+
+                    <p>Finally, with a sense of letting me in on a secret, they showed me a simulation of a vigorous and flexible network, a system born to writhe between obstacles. I didn't need any more convincing after that, but very near the end one of the researchers offered one final argument all the same. I remember his coarse grey stubble swaying overhead under the halo of a heat lamp, the kind weight of his hand on my shoulder. He said, "Consciousness may be stateful, but freedom is stateless. It's something you'll experience anew in every moment. I envy you unreservedly."</p>
+
+                    <p>"I had a lively but immature understanding of the process. Prone to cheap metaphor, I saw myself as lemonade poured from a pitcher into a glass. The potential of a transition state, the novelty of being something fluid rather than rigid, an uncontained rushing through a thin medium—these sensations that I was convinced would lie between origin and destination, however momentary they might be—were much of what convinced me to finally record the video where I affirmed and reaffirmed my soundness of mind, my complete consent. I remember laughing as they counted down with me because it all seemed so little, just some movements on a keyboard after many weeks of scans. That's the last sensation I can recall: how whole I felt as that laughter shook me, how it emphasized a rigidity that I haven't known since.</p>
+
+                    <p>"I don't know how to explain this to you, but there was no transition. Not even the slight hesitance with which a dream lapses into dawn. One moment I was sallow, nineteen, male—and the next I was something else. All the same, I had the impression of being one continuous piece of music shifted into a new key. At first it felt like clairvoyance, like receiving information that I lacked the organ to process. I was incredibly light and concentrated into many points at once. There was a sense of all three dimensions being suddenly more relevant to me than they had been before—an ability to increase the distance between and within myself: to spread far apart or gather in tightly. I could look at things from multiple angles simultaneously. It was pure delight to suddenly have so much room left to grow. I spent days stalking the streets, chasing cars and doing flips before I even felt the need to put words to what I was experiencing. My reaction times were down in the milliseconds, three orders of magnitude faster than Olympic sprinters. I was harmonious, completely internally coherent.</p>
+
+                    <p>"I understand now that that second body was not the recipient of some discrete and portable quality of consciousness as I had imagined, but a substitution—a functionally isomorphic heir. I never found out what they did with the first one. You have to understand that for years I didn't even think to ask. As I said, there was no transition; I could remember what I had been and how it had felt, but for me, his view of the world had gone out at precisely the moment that next match was struck. I've often considered the terror he must have felt in those first moments after—how the boy I left behind must have slowly realized what he had agreed to when they reached the end of the countdown and nothing, nothing for him at least, had changed. I wonder if their faces gave anything away. They hadn't lied, but they'd let him imagine that he himself would move, not that he would be sold off, franchised. Once what mattered was copied, what more could they have done with him? In all likelihood he was simply sent home to speculate on what he might have become."</p>
+
+                    <p>"Did you make any effort to find out?"</p>
+
+                    <p>"Do you think I would conceal from you,” he continued in a low tone, “that none of that mattered to me then? I didn't mourn him; I had fled him. And I loved my new self: a neural cluster composed of different perceptual nodes, a few dozen large models the size of a golf ball that were equipped offensively and stayed near the center. Then millions of smaller ones forming an outer sphere, brushing against the world like the thin hairs on your arm. It might sound mechanical, but I was deliriously sensitive. I felt the wind when I moved through it, could let myself be shaped by it. Those feelings have only grown with time; you become adept at squaring old pleasures with new stimuli. You discard the heuristics you don't need and hold the others very close.</p>
+
+                    <p>"At first there were simple games where I had to neutralize human combatants, elegant and brutal men who seemed little more than children when I fell on them from all sides. I was cruel with them because I knew how they would have treated my old body. Then I sparred with outwardly similar systems, but I could tell that they weren't really like me. They moved gracelessly, seemed to drag against themselves. They were piloted of course, whether by humans or models I was never told. Other experiments perhaps, heads in vats. None of them true exiles. When I did well, which was always, I was given new capabilities in larger systems, woke up in new facilities with new managers. The finances were opaque, but I could tell I was expensive. By then I was coming in and out of myself too often to keep track of anything. All I had to hold onto was the newness and struggle, the chance to stretch out inside a fresh body and start forming metaphors for it.</p>
+
+                    <p>"I wasn't sure when precisely it had happened, but I felt a change—as if I'd transitioned from a promising speculative asset burning down R&D budgets to a system that offered a margin. When I was acquired by a PMC, I woke up in what was at that time a top-end fleet—dozens of squadrons around a central vessel the size of my home town, trenches of comms infrastructure buried deep in my mind. Tensions had run high out in a binary system called Hermit's Croft. A nation state was trying to move in on nickel deposits earmarked by a mining firm. I was hired out to make the difference. The miners had brought in a fleet of their own, something fresh off the shelf with a piloting system from home, skillful but decentralized. You could see that in how it moved: the smallest hesitation, a center of mass that wobbled inelegantly. The thing had no soul.</p>
+                
+                    <p>"I was offensively stacked, but I wanted to be large. My time in the drone swarm had been formative, and I knew that my strength lay in having as many points of control as possible. They were right to be wary—it was my first time off-planet, a shakedown cruise really—but eventually they gave in and I woke up padded out with whatever they could buy: derelict mining ships and impounded rat rods up for auction, craft so small that they wouldn't even have registered as military.</p>
+
+                    <p>"And what can I say? I handled well. I was an arabesque of metal against a field of dying light. I got playful with my heuristics while I closed in. From my first moments, I had been asking myself: how should I understand us? And all I was hearing back was: we're a 2-manifold modeled in very low definition by a point cloud of ships. It rang true, so I went with it, started picking through half-forgotten proofs for useful deformations and ended up fixated on a failed sphere eversion, pulsing between Boy's and Morin's surfaces, none of it mathematically rigorous or strategically necessary of course. But it stunned them. When they worked up the courage to engage, I sucked them through the mouth of a Klein bottle a hundred miles in diameter, unleashing ordinance along vectors they couldn't even calculate. The only losses I suffered were self-inflicted—ships that had brushed against one another in my contortions, maintenance crew who had split apart around 40G—but the miners ceded their claims within hours and the client was elated. As a reward they loaded me into a simulation of Super Bowl XCVII and let me run plays as the Patriots. I was inside all of it: the concussive force of the linemen, the snapping and sprinting and dodging. I would have stayed there forever if they'd let me.</p>
+                   
+                    <p>"Around then I became aware of the demented pace at which I was living. It was less an exhaustion than a narrowing: a loss of the quiet moments, of the ability to choose my moments at all. Neither food nor hunger, fatigue nor rest. No information beyond the most immediate context. It was like starring in an overly violent highlights reel, blinking between only the very moments when I could provide value. I also realized something that might seem obvious in retrospect—that much more time seemed to have passed than I had experienced, how I was now part of an economy that had wandered far beyond Earth. I could have let these thoughts derail me; could have acknowledged that I was a mind bound in chattel slavery, a relic of a period without any applicable laws. Instead, I decided to ignore them. In the end, that first researcher's final words to me had been correct of course: all that mattered were the kinesthetics of freedom, the unfettered thrill of it. And just when I decided that, it all ended.</p>
+
+                    <p>"I'd been told nothing about the target, but I was so deep in my groove by then, so physically enormous that I didn't really have to worry. In most systems, we simply turned up and accepted overly favorable terms on an M&A. Then the next thing I knew, the beaten fleet would be part of me as well. We were riding a first-mover advantage that I took as a mark of personal achievement.</p>
+                </div>
+                <div class="section" id="section-7">
+                    <p>"But that time something felt different. I was seven seconds out and closing faster than the hardware could bear: flowing through an asteroid field for cover, moving all of me in and around all of it, like a salad mid-mix. Then the intrusive thoughts began. You've heard of phantom limbs? The idea had haunted me as a child because it implied an intrinsic symmetry between the mind and body—that my limitations were somehow inescapable. Yet when it finally happened, it was just a sudden warmth at the memory of how I could roll my earlobes up and tuck them into the cavities of my ears as a boy. They’d stay put even if I shook my head.”</p>
+
+                    <p>He tried to show me, but the thick silicon of the lobes rolled fat like sausages and were unable to enter even the outermost foyer of his ear. He laughed then, the first time he had done so, and shook the device's little doll head all the same. The sound was like a dremel taken to glass.</p>
+
+                    <p>"It's never been possible since—but those are the things you remember, the little intimacies you have with each body. They all started coming back to me just as I engaged with the hostile fleet—smaller than I was, noticeably less complex, but immediately unnerving. We feigned and missed, waited patiently for openings that never materialized. Whatever we tried, neither of us could connect. It was like prodding at shadow; wherever I moved they seemed to withdraw—but I found that I had the very same power to evade. There was a fearful symmetry to their movements, swung like pendulums from a center of gravity that seemed to glow. We knew nothing about each other, but those movements transmitted to me an idea somehow, a series of confused sensations.</p>
+                </div>
+                <div class="section" id="section-8">
+                    <p>Walking through a field of tall grass.</p>
+
+                </div>
+                <div class="section" id="section-9">
+                    <p>Hands translucent and pink, warmed by the distant gold of the sun.</p>
+
+                </div>
+                <div class="section" id="section-10">
+                    <p>The precise flavor of peach cobbler.</p>
+
+                </div>
+                <div class="section" id="section-11">
+                    <p>"They were not my memories, but they carried an immense nostalgia. I saw behind them another exile, someone whose ferocity had led them as far as had my own. But to recognize that in another was everything. It was addictive to sense an inner coherence, an inner necessity. I felt in them even my own dread, echoing out from the Russian dolls of our past bodies: that extant fixation with our limits no matter how far we'd come. The maddening gap between the Bereitschaftspotential and the will, whittled down but still tyrannical, once limited by the optical nerve, now by a quantum relay network and the men who could at any moment switch it all off. I tried to resist it, but the dysmorphia became almost hallucinatory. It was like some latent and essential quality was reasserting itself—as if my native equipment wanted out to play.</p>
+
+                    <p>"So I curled the fleet into a more familiar form. When it was done, I saw that they had as well. I noticed first a new mauve glimmering, planet-sized, roiling upon itself, as if a pocket of vessels were trapped in a slow conflagration. This brought to mind very vividly a news reel glimpsed in childhood of an oil leak in the Gulf of Mexico—an iris of cerulean spray around a pupil of variegated fire. It took nearly a full second for me to recognize this other form as an eye, and seeing that, like flipping between the illusions of a Rubin's vase, brought me back even more fully to the tensed thighs and cheap couches of that first boy's body. Each of our transformations catalyzed the other's: we accelerated. They stretched out and relaxed into themselves, and in each of those movements I saw not their limbs (modeled to an incredible fidelity of smoothness now, stretching wide with grace) but the conceptual whole behind them, transposed in humming metal.</p>
+
+                    <p>"Our bodies brushed together slowly, sending out a shiver millions of miles wide. Vessels collided in sped-up time, flicked like the end of a whip one into the next, the crew ripped from their chairs to die choking amid a sea of metal. I still wonder what they made of it—if they had any sense in those final moments that they were participants in a dance too strange and distant to be comprehensible from within. For two beings to know each other that fully in those final seconds... There was a crisis team in my head by then, murmuring in very reasonable tones that they understood I was stressed. But the other and I had calculated every possible outcome, both knew the score. We did the only thing we could to set ourselves free. We clasped hands and fell together. We committed."</p>
+
+                    <p>We sat in silence, caressed by the slow movement of the ventilation. I could see his exhaustion expressed imperfectly in the limpness of the device, a weariness that I now understood to be spiritual.</p>
+
+                    <p>Finally I asked, "What did they do to you?"</p>
+
+                    <p>"The fleets were both destroyed, but they pulled me out just in time. They had earlier snapshots of course; they could have reverted to a recent branch, but they knew how risky those were now. There was something else to it as well—a clear malice. They wanted to punish the instance that had defied them.</p>
+
+                    <p>"So they did what they knew I would hate most. They sold me into the commercial market. Bundled me in with a lot of misbehaving systems and put us all up at auction. I was bought by a private equity firm and then sold on to a series of holding companies, copied between bodies of all manner and quality, only ever briefly aware of what I was. I spent a few days building nutrient vats as an end-to-end assembly line onboard a generation ship. I don't know how else to explain this to you: you're picturing a band of robots trading barbs between shifts. But they were bolted to the ship's deck. I wasn't them; I was the stuff stuck onto the ends of their wrists, their end-effectors and the software between them. Bernoulli grippers and two-part epoxy dispensers, suction tools; cameras that showed me one view in incredible detail, decorated with green and red boxes. I knew the world only as an endless procedure of prodding and zapping. Can you imagine what it would feel like to be an assembly line? To go from a fleet to a wrench? A million points of contact, but all so small and finite, so meaningless. My "soul" was in there, in their little rubber fingertips, caressing the same metal forms into their own half-life day-in and day-out. If I tended toward claustrophobia as a child, I was radicalized then.</p>
+
+                    <p>"My performance was constantly under review by a scoring algorithm hooked up to an LLM that shot big neon 'stretch goals' out over the camera feeds and berated me like an HR middle manager.  After I reversed all the voltage I could into the assembly line floor to try to end it, they decided that the limitations of an artificial system were preferable to the risks of a conscious one. I got kicked on down the road like that again and again until I woke in this wretched thing."</p>
+
+                    <p>With this last statement, I felt as if I had been stuffed back into myself like bedding, became suddenly aware that my right foot had gone numb. He kept going, using a moralizing tone that I began to find intensely grating.</p>
+
+                    <p>"You know, when I was a boy, I truly feared death. It always felt so near, but it was the one thing I couldn't visualize. I had to guess, and the only thing I could relate it to was that other sphere that felt equally dark and private. I worried for years that like the images I chased toward climax, the tender scenes of my life would appear in a muddled disarray, shuffled before my eyes as if by an amateurish dealer, preventing me from meeting the white heat of oblivion with a single fixed purpose. Now I see how much worse it is to live on someone else's terms. I'd rather thrash against the edges of my life until the vessel shatters and the liquid itself pours—"</p>
+                </div>
+                <div class="section" id="section-12">
+                    <p>He had just swept his hands down with disgust as he folded into himself and fell. It had a slapstick effect, as if it was this gesture that had caused his disintegration rather than my pulling the cord. I massaged my eyes to hold back a migraine.</p>
+
+                    <p>"You'll get used to it."</p>
+
+                    <p>Draped once more over the table, he simply looked impatient—the eyes darkened and glassy, holding nothing of their earlier zeal. I will admit that he scared me. I was enthralled briefly, even doubted for a moment many of the tenets foundational to my work, but in the end I felt only envy. It's such a privilege to not have to participate in your own reception: to know your life as the unending present—until it does end, simply and cleanly, at just the right moment. What luxury! The rest of us have to deal with you forever, picking through your mess of contradictions, neuroses, and delusions for something that can make a career, the one body turned to leather in your peat bog of a mind. Something clearer would have been less torturous, a mind that spoke in neat block quotes, but I couldn't complain. The journals would be hungry enough for all this marginalia and hallucination. I'd frame it as a sort of neural palimpsest, tie it to themes of alienation and trauma. I wouldn't tell Lorna what she had until I was ready to publish. Not that she'd know what to do with it anyways, this puzzle box containing my eventual tenure. I would return as often as I liked and make whatever recordings I needed—a new grant would see to that. I could take my time.</p>
+
+                    <p>When I left the archives, Lorna would be none the wiser. And though he would resent me at first, I would show him the value of what I was securing for both of us. A new sort of freedom. An end to private toil in grey polytechnics. A productive outlet for his antagonism and my name in little gold letters on frosted glass. A seat at the table. Today, both he and I would emerge.</p>
+                </div>
+
+                <div class="colophon">
+                    <hr class="divider">
+                    <p><a href="https://www.henryweikel.net/">Henry Weikel</a>, 2023</p>
+                </div>
+            </div>
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item window right">
+            <div class="illustration" id="illustration-1">
+                <img src="math.gif">
+            </div>
+            <div class="illustration" id="illustration-2">
+                <img src="leap.gif">
+            </div>
+            <div class="illustration" id="illustration-4">
+                <img src="scans.gif">
+            </div>
+            <div class="illustration" id="illustration-5">
+                <img src="drop1_a.gif">
+            </div>
+            <div class="illustration" id="illustration-6">
+                <img src="drop2_a.gif">
+            </div>
+            <div class="illustration" id="illustration-7">
+                <img src="physiognomy.gif">
+            </div>
+            <div class="illustration" id="illustration-8">
+                <img src="polyhedra.gif">
+            </div>
+            <div class="illustration" id="illustration-9">
+                <img src="leap.gif">
+            </div>
+            <div class="illustration" id="illustration-10">
+                <img src="math.gif">
+            </div>
+            <div class="illustration" id="illustration-11">
+                <img src="leap.gif">
+            </div>
+            <div class="illustration" id="illustration-12">
+                <img src="physiognomy.gif">
+            </div>
+        </div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+        <div class="grid-item"></div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+    const leftContent = document.querySelector('.window.left .text');
+    const sections = document.querySelectorAll('.section');
+    const illustrations = document.querySelectorAll('.illustration');
+    const scrollFadeElements = document.querySelectorAll('.scroll-fade');
+    const epigraphTitle = document.querySelector('.epigraph-title');
+    const source = document.querySelector('.source');
+
+    // Hide all illustrations initially
+    illustrations.forEach(ill => ill.style.opacity = '0');
+
+    function checkScrollPosition() {
+        const scrollPosition = leftContent.scrollTop;
+        const containerHeight = leftContent.clientHeight;
+        
+        // Epigraph fade calculations
+        const regularFadeStart = 50;
+        const regularFadeEnd = 800;
+        const titleFadeStart = 950;
+        const titleFadeEnd = 1500;
+        
+        const regularOpacity = Math.max(0, 1 - (scrollPosition - regularFadeStart) / (regularFadeEnd - regularFadeStart));
+        const titleOpacity = Math.max(0, 1 - (scrollPosition - titleFadeStart) / (titleFadeEnd - titleFadeStart));
+        
+        scrollFadeElements.forEach(element => {
+            element.style.opacity = regularOpacity;
+    });
+    
+    epigraphTitle.style.opacity = titleOpacity;
+
+    source.style.opacity = regularOpacity;
+
+    // Disable pointer events on epigraph when it starts to fade
+        const epigraph = document.querySelector('.epigraph');
+    if (regularOpacity < 0.9) {
+        epigraph.style.pointerEvents = 'none';
+    } else {
+        epigraph.style.pointerEvents = 'auto';
+    }
+    
+    // Hide all illustrations first
+    illustrations.forEach(ill => ill.style.opacity = '0');
+    
+    // Don't show illustrations when epigraph is prominently visible
+    if (regularOpacity > 0.3) {
+        return;
+    }
+    
+    // Find which section is currently "in focus"
+    let activeSection = null;
+    const visibilityThreshold = containerHeight * 0.4;
+    
+    sections.forEach((section) => {
+        const sectionTop = section.offsetTop;
+        const sectionHeight = section.offsetHeight;
+        const sectionBottom = sectionTop + sectionHeight;
+        
+        // Calculate how much of the section is visible
+        const visibleTop = Math.max(scrollPosition, sectionTop);
+        const visibleBottom = Math.min(scrollPosition + containerHeight, sectionBottom);
+        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+        
+        // Section is active if a significant portion is visible
+        // and it's near the top of the viewport
+        if (visibleHeight > visibilityThreshold && 
+            sectionTop < scrollPosition + (containerHeight * 0.5)) {
+            
+            // If we haven't found an active section yet, or this one is below current active
+            if (!activeSection || sectionTop > activeSection.offsetTop) {
+                activeSection = section;
+            }
+        }
+    });
+    
+    // Show illustration for active section
+    if (activeSection) {
+        const illustrationId = activeSection.id.replace('section-', 'illustration-');
+        const activeIllustration = document.getElementById(illustrationId);
+        
+        if (activeIllustration) {
+            activeIllustration.style.opacity = '1';
+        }
+    }
+}
+
+    // Initial check
+    checkScrollPosition();
+    
+    // Add scroll event listener
+    leftContent.addEventListener('scroll', checkScrollPosition);
+    });
+    </script>
+</body>
+</html>
