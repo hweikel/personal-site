@@ -55,6 +55,8 @@
             gap: 1px;
             width: 100vw;
             height: 100vh;
+            height: calc(var(--vh, 1vh) * 100); /* Use the real viewport height */
+
         }
 
         .grid-item {
@@ -187,6 +189,7 @@
             .grid-container {
                 grid-template-rows: 3vh 60vh 3vh 31vh 3vh;
                 grid-template-columns: 6vw 88vw 6vw;
+                height: calc(var(--vh, 1vh) * 100);
             }
 
             /* MAP CONTENT TO DIFFERENT CELLS FOR MOBILE LAYOUT */
@@ -450,96 +453,106 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-    const leftContent = document.querySelector('.window.left .text');
-    const sections = document.querySelectorAll('.section');
-    const illustrations = document.querySelectorAll('.illustration');
-    const scrollFadeElements = document.querySelectorAll('.scroll-fade');
-    const epigraphTitle = document.querySelector('.epigraph-title');
-    const source = document.querySelector('.source');
+            function setRealVh() {
+                // Set the real viewport height as a CSS variable
+                let vh = window.innerHeight * 0.01;
+                document.documentElement.style.setProperty('--vh', `${vh}px`);
+            }
 
-    // Hide all illustrations initially
-    illustrations.forEach(ill => ill.style.opacity = '0');
+            // Initial set and update on resize
+            setRealVh();
+            window.addEventListener('resize', setRealVh);
 
-    function checkScrollPosition() {
-        const scrollPosition = leftContent.scrollTop;
-        const containerHeight = leftContent.clientHeight;
-        
-        // Epigraph fade calculations
-        const regularFadeStart = 50;
-        const regularFadeEnd = 800;
-        const titleFadeStart = 950;
-        const titleFadeEnd = 1500;
-        
-        const regularOpacity = Math.max(0, 1 - (scrollPosition - regularFadeStart) / (regularFadeEnd - regularFadeStart));
-        const titleOpacity = Math.max(0, 1 - (scrollPosition - titleFadeStart) / (titleFadeEnd - titleFadeStart));
-        
-        scrollFadeElements.forEach(element => {
-            element.style.opacity = regularOpacity;
-    });
-    
-    epigraphTitle.style.opacity = titleOpacity;
+            const leftContent = document.querySelector('.window.left .text');
+            const sections = document.querySelectorAll('.section');
+            const illustrations = document.querySelectorAll('.illustration');
+            const scrollFadeElements = document.querySelectorAll('.scroll-fade');
+            const epigraphTitle = document.querySelector('.epigraph-title');
+            const source = document.querySelector('.source');
 
-    source.style.opacity = regularOpacity;
+            // Hide all illustrations initially
+            illustrations.forEach(ill => ill.style.opacity = '0');
 
-    // Disable pointer events on epigraph when it starts to fade
-        const epigraph = document.querySelector('.epigraph');
-    if (regularOpacity < 0.9) {
-        epigraph.style.pointerEvents = 'none';
-    } else {
-        epigraph.style.pointerEvents = 'auto';
-    }
-    
-    // Hide all illustrations first
-    illustrations.forEach(ill => ill.style.opacity = '0');
-    
-    // Don't show illustrations when epigraph is prominently visible
-    if (regularOpacity > 0.3) {
-        return;
-    }
-    
-    // Find which section is currently "in focus"
-    let activeSection = null;
-    const visibilityThreshold = containerHeight * 0.4;
-    
-    sections.forEach((section) => {
-        const sectionTop = section.offsetTop;
-        const sectionHeight = section.offsetHeight;
-        const sectionBottom = sectionTop + sectionHeight;
-        
-        // Calculate how much of the section is visible
-        const visibleTop = Math.max(scrollPosition, sectionTop);
-        const visibleBottom = Math.min(scrollPosition + containerHeight, sectionBottom);
-        const visibleHeight = Math.max(0, visibleBottom - visibleTop);
-        
-        // Section is active if a significant portion is visible
-        // and it's near the top of the viewport
-        if (visibleHeight > visibilityThreshold && 
-            sectionTop < scrollPosition + (containerHeight * 0.5)) {
+            function checkScrollPosition() {
+                const scrollPosition = leftContent.scrollTop;
+                const containerHeight = leftContent.clientHeight;
+                
+                // Epigraph fade calculations
+                const regularFadeStart = 50;
+                const regularFadeEnd = 800;
+                const titleFadeStart = 950;
+                const titleFadeEnd = 1500;
+                
+                const regularOpacity = Math.max(0, 1 - (scrollPosition - regularFadeStart) / (regularFadeEnd - regularFadeStart));
+                const titleOpacity = Math.max(0, 1 - (scrollPosition - titleFadeStart) / (titleFadeEnd - titleFadeStart));
+                
+                scrollFadeElements.forEach(element => {
+                    element.style.opacity = regularOpacity;
+            });
             
-            // If we haven't found an active section yet, or this one is below current active
-            if (!activeSection || sectionTop > activeSection.offsetTop) {
-                activeSection = section;
+            epigraphTitle.style.opacity = titleOpacity;
+
+            source.style.opacity = regularOpacity;
+
+            // Disable pointer events on epigraph when it starts to fade
+                const epigraph = document.querySelector('.epigraph');
+            if (regularOpacity < 0.9) {
+                epigraph.style.pointerEvents = 'none';
+            } else {
+                epigraph.style.pointerEvents = 'auto';
+            }
+            
+            // Hide all illustrations first
+            illustrations.forEach(ill => ill.style.opacity = '0');
+            
+            // Don't show illustrations when epigraph is prominently visible
+            if (regularOpacity > 0.3) {
+                return;
+            }
+            
+            // Find which section is currently "in focus"
+            let activeSection = null;
+            const visibilityThreshold = containerHeight * 0.4;
+            
+            sections.forEach((section) => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.offsetHeight;
+                const sectionBottom = sectionTop + sectionHeight;
+                
+                // Calculate how much of the section is visible
+                const visibleTop = Math.max(scrollPosition, sectionTop);
+                const visibleBottom = Math.min(scrollPosition + containerHeight, sectionBottom);
+                const visibleHeight = Math.max(0, visibleBottom - visibleTop);
+                
+                // Section is active if a significant portion is visible
+                // and it's near the top of the viewport
+                if (visibleHeight > visibilityThreshold && 
+                    sectionTop < scrollPosition + (containerHeight * 0.5)) {
+                    
+                    // If we haven't found an active section yet, or this one is below current active
+                    if (!activeSection || sectionTop > activeSection.offsetTop) {
+                        activeSection = section;
+                    }
+                }
+            });
+            
+            // Show illustration for active section
+            if (activeSection) {
+                const illustrationId = activeSection.id.replace('section-', 'illustration-');
+                const activeIllustration = document.getElementById(illustrationId);
+                
+                if (activeIllustration) {
+                    activeIllustration.style.opacity = '1';
+                }
             }
         }
-    });
-    
-    // Show illustration for active section
-    if (activeSection) {
-        const illustrationId = activeSection.id.replace('section-', 'illustration-');
-        const activeIllustration = document.getElementById(illustrationId);
-        
-        if (activeIllustration) {
-            activeIllustration.style.opacity = '1';
-        }
-    }
-}
 
-    // Initial check
-    checkScrollPosition();
-    
-    // Add scroll event listener
-    leftContent.addEventListener('scroll', checkScrollPosition);
-    });
+            // Initial check
+            checkScrollPosition();
+            
+            // Add scroll event listener
+            leftContent.addEventListener('scroll', checkScrollPosition);
+        });
     </script>
 </body>
 </html>
