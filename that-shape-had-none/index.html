@@ -54,9 +54,6 @@
             grid-template-columns: 1fr 30vw 15vw 30vw 1fr;
             gap: 1px;
             width: 100vw;
-            height: 100vh;
-            height: calc(var(--vh, 1vh) * 100); /* Use the real viewport height */
-
         }
 
         .grid-item {
@@ -197,7 +194,6 @@
             .grid-container {
                 grid-template-rows: 3vh 60vh 3vh 31vh 3vh;
                 grid-template-columns: 6vw 88vw 6vw;
-                height: calc(var(--vh, 1vh) * 100);
             }
 
             /* MAP CONTENT TO DIFFERENT CELLS FOR MOBILE LAYOUT */
@@ -461,15 +457,27 @@
     </div>
     <script>
         document.addEventListener('DOMContentLoaded', () => {
-            function setRealVh() {
-                // Set the real viewport height as a CSS variable
-                let vh = window.innerHeight * 0.01;
-                document.documentElement.style.setProperty('--vh', `${vh}px`);
+                    // Get the grid container
+            const gridContainer = document.querySelector('.grid-container');
+            
+            // Function to set the height
+            function setContainerHeight() {
+                // Use 100% of window height
+                gridContainer.style.height = `${window.innerHeight}px`;
             }
-
-            // Initial set and update on resize
-            setRealVh();
-            window.addEventListener('resize', setRealVh);
+            
+            // Set initial height
+            setContainerHeight();
+            
+            // Update on resize and scroll (important for mobile Safari)
+            window.addEventListener('resize', setContainerHeight);
+            window.addEventListener('scroll', setContainerHeight);
+            
+            // Also update on orientation change for mobile devices
+            window.addEventListener('orientationchange', function() {
+                // Small delay to ensure new dimensions are calculated after rotation
+                setTimeout(setContainerHeight, 100);
+            });
 
             const leftContent = document.querySelector('.window.left .text');
             const sections = document.querySelectorAll('.section');
