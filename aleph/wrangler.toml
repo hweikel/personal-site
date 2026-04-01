@@ -1,0 +1,8 @@
+name = "aleph-worker"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+account_id = "02b981bce13062095d15a747c5d44ad2"
+
+[[kv_namespaces]]
+binding = "SUGGESTIONS_KV"
+id = "c2722fe79fec40ba82595b303484f858"

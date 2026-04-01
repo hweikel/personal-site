@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aleph</title>
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: #000;
+      color: #2f73f7;
+      font-family: monospace;
+      font-size: 13px;
+    }
+
+    /* ── Control bar ───────────────────────────────────────── */
+
+    #control-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      background: #000;
+      border-bottom: 1px solid #2f73f7;
+      z-index: 100;
+    }
+
+    #control-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #control-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #filter-input {
+      background: #000;
+      color: #2f73f7;
+      border: 1px solid #2f73f7;
+      padding: 3px 8px;
+      font-family: monospace;
+      font-size: 13px;
+      outline: none;
+      width: 220px;
+    }
+
+    #filter-input::placeholder {
+      color: #2f73f7;
+      opacity: 0.4;
+    }
+
+    #photo-count {
+      color: #2f73f7;
+      white-space: nowrap;
+    }
+
+    .top-btn {
+      background: #000;
+      color: #2f73f7;
+      border: 1px solid #2f73f7;
+      padding: 3px 8px;
+      font-family: monospace;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .top-btn:hover {
+      background: #2f73f7;
+      color: #000;
+    }
+
+    /* ── Tag player bar ────────────────────────────────────── */
+
+    #player-bar {
+      position: fixed;
+      top: 37px;
+      left: 0;
+      right: 0;
+      height: 36px;
+      display: none; /* shown by JS when active tag has a playlist */
+      align-items: center;
+      gap: 8px;
+      padding: 0 12px;
+      background: #000;
+      border-bottom: 1px solid #2f73f7;
+      z-index: 99;
+    }
+
+    /* ── Grid ──────────────────────────────────────────────── */
+
+    #grid {
+      margin-top: 37px; /* adjusted by JS when player bar is shown */
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    .cell {
+      background: #000;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      cursor: pointer;
+      position: relative;
+      border-right: 1px solid #2f73f7;
+      border-bottom: 1px solid #2f73f7;
+    }
+
+    .cell img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      padding: 6px;
+    }
+
+    /* ── Modal ─────────────────────────────────────────────── */
+
+    #modal {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    #modal-img {
+      display: block;
+      max-width: 90vw;
+      max-height: 80vh;
+      object-fit: contain;
+    }
+
+    #modal-controls {
+      background: #000;
+      padding: 8px 16px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      width: min(90vw, 640px);
+    }
+
+    #modal-tags-row {
+      text-align: center;
+      line-height: 1.6;
+      min-height: 1em;
+    }
+
+    .modal-tag {
+      color: #2f73f7;
+      cursor: pointer;
+    }
+
+    .modal-tag:hover {
+      text-decoration: underline;
+    }
+
+    #suggest-form {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #suggest-label {
+      color: #2f73f7;
+    }
+
+    #suggest-input {
+      background: #000;
+      color: #2f73f7;
+      border: 1px solid #2f73f7;
+      padding: 3px 8px;
+      font-family: monospace;
+      font-size: 13px;
+      outline: none;
+      width: 160px;
+    }
+
+    #suggest-input::placeholder {
+      color: #2f73f7;
+      opacity: 0.4;
+    }
+
+    #suggest-status {
+      color: #2f73f7;
+      min-height: 1.2em;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Control bar -->
+<div id="control-bar">
+  <div id="control-left">
+    <input id="filter-input" type="text" placeholder="filter by tag…"
+           autocomplete="off" spellcheck="false">
+    <span id="photo-count">—</span>
+  </div>
+  <div id="control-right">
+    <button id="btn-random" class="top-btn">random</button>
+  </div>
+</div>
+
+<!-- Tag-associated music player — hidden until a tag with a playlist is active -->
+<div id="player-bar">
+  <button id="btn-prev" class="top-btn">prev</button>
+  <button id="btn-play" class="top-btn">play</button>
+  <button id="btn-next" class="top-btn">next</button>
+</div>
+
+<div id="grid"></div>
+
+<!-- Focus modal: read-only -->
+<div id="modal">
+  <img id="modal-img" alt="">
+  <div id="modal-controls">
+    <div id="modal-tags-row"></div>
+    <form id="suggest-form" autocomplete="off">
+      <span id="suggest-label">suggest a tag</span>
+      <!-- honeypot: bots fill this, humans don't -->
+      <input type="text" name="website" style="display:none" tabindex="-1" autocomplete="off">
+      <input id="suggest-input" type="text" placeholder="tag…" spellcheck="false">
+      <button type="submit" class="top-btn">submit</button>
+    </form>
+    <div id="suggest-status"></div>
+  </div>
+</div>
+
+<audio id="audio"></audio>
+
+<script>
+'use strict';
+
+// ── Constants ─────────────────────────────────────────────────
+
+const TAGS_URL         = "https://trove.henryweikel.net/aleph/tags.json";
+const CDN_BASE         = "https://trove.henryweikel.net/aleph";
+const SUGGEST_ENDPOINT = "https://aleph-worker.tag-whisperer.workers.dev/api/suggest";
+const SUGGEST_TOKEN    = "theproofinthepudding";
+
+// Keys are tag strings (exact match, case-sensitive to storage).
+// Values are arrays of { url } objects — no title or artist metadata.
+const BASE_TUNES = "https://trove.henryweikel.net/aleph/aleph-tunes";
+const TAG_PLAYLISTS = {
+  "edi": [
+    { url: `${BASE_TUNES}/itcouldhavebeenabrilliantcareer.mp3` },
+    { url: `${BASE_TUNES}/weirdfishes.mp3` },
+  ],
+  "treehaven": [
+    { url: `${BASE_TUNES}/kazenogogoni.mp3` },
+  ],
+  "invention": [
+    { url: `${BASE_TUNES}/imitosis.mp3` },
+  ],
+  "nyc": [
+    { url: `${BASE_TUNES}/yourreply.mp3` },
+  ],
+  "grotto": [
+    { url: `${BASE_TUNES}/fanfare.mp3` },
+  ],
+  "william": [
+    { url: `${BASE_TUNES}/caodong.mp3` },
+    { url: `${BASE_TUNES}/decajoins.mp3` },
+  ],
+  "campus": [
+    { url: `${BASE_TUNES}/easyeasy.mp3` },
+    { url: `${BASE_TUNES}/caodong.mp3` },
+  ],
+  "london": [
+    { url: `${BASE_TUNES}/bluetrainlines.mp3` },
+    { url: `${BASE_TUNES}/1%209%20Empty%20And%20Silent%20(feat.%20King%20Krule)%209D27425D-B313-4465-BE31-62C6541C6638.mp3` },
+  ],
+  "wheaton": [
+    { url: `${BASE_TUNES}/animals.mp3` },
+    { url: `${BASE_TUNES}/blueridgemountains.mp3` },
+  ],
+  "sweden": [
+    { url: `${BASE_TUNES}/tradgardenenfredag.mp3` },
+  ],
+  "powerful": [
+    { url: `${BASE_TUNES}/snat.mp3` },
+    { url: `${BASE_TUNES}/toxicity.mp3` },
+  ],
+  "edwards": [
+    { url: `${BASE_TUNES}/Sugar.mp3` },
+  ],
+  "416": [
+    { url: `${BASE_TUNES}/tarin.flac` },
+  ],
+  "sf": [
+    { url: `${BASE_TUNES}/sweetwilliam.mp3` },
+  ],
+};
+
+const BATCH = 200;
+
+// ── Element refs ──────────────────────────────────────────────
+
+const $grid          = document.getElementById('grid');
+const $filterInput   = document.getElementById('filter-input');
+const $count         = document.getElementById('photo-count');
+const $btnRandom     = document.getElementById('btn-random');
+const $playerBar     = document.getElementById('player-bar');
+const $btnPrev       = document.getElementById('btn-prev');
+const $btnPlay       = document.getElementById('btn-play');
+const $btnNext       = document.getElementById('btn-next');
+const $audio         = document.getElementById('audio');
+const $modal         = document.getElementById('modal');
+const $modalImg      = document.getElementById('modal-img');
+const $modalControls = document.getElementById('modal-controls');
+const $modalTagsRow  = document.getElementById('modal-tags-row');
+const $suggestForm   = document.getElementById('suggest-form');
+const $suggestInput  = document.getElementById('suggest-input');
+const $suggestStatus = document.getElementById('suggest-status');
+
+// ── In-memory data ────────────────────────────────────────────
+
+let photoData     = {};  // { filename: [tags, ...] }
+let allPhotos     = [];  // all filenames, shuffled once on load
+let visiblePhotos = [];  // current filtered+ordered view
+let renderIndex   = 0;
+let lazyObserver  = null;
+
+// ── Modal state ───────────────────────────────────────────────
+
+let modalOpen     = false;
+let modalIndex    = -1;
+let modalFilename = '';
+let statusTimer   = null;
+
+// ── Player state ──────────────────────────────────────────────
+
+let activeTag     = '';   // currently active filter tag ('' = none)
+let tagPlaylist   = [];   // tracks for active tag
+let trackIndex    = 0;
+let isPlaying     = false;
+
+// ── Fisher-Yates shuffle ──────────────────────────────────────
+
+function shuffleInPlace(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+}
+
+// ── Player ────────────────────────────────────────────────────
+
+function showPlayer(tracks) {
+  tagPlaylist = tracks;
+  trackIndex  = 0;
+  isPlaying   = false;
+  $audio.pause();
+  $audio.src = tagPlaylist[trackIndex].url;
+  $audio.load();
+  $btnPlay.textContent = 'play';
+  $playerBar.style.display = 'flex';
+  $grid.style.marginTop = '74px';
+}
+
+function hidePlayer() {
+  $audio.pause();
+  $audio.src    = '';
+  tagPlaylist   = [];
+  trackIndex    = 0;
+  isPlaying     = false;
+  $btnPlay.textContent = 'play';
+  $playerBar.style.display = 'none';
+  $grid.style.marginTop = '37px';
+}
+
+function loadTrack(index, shouldPlay) {
+  trackIndex = ((index % tagPlaylist.length) + tagPlaylist.length) % tagPlaylist.length;
+  $audio.src = tagPlaylist[trackIndex].url;
+  $audio.load();
+  if (shouldPlay) {
+    $audio.play().catch(() => {});
+    isPlaying = true;
+    $btnPlay.textContent = 'pause';
+  } else {
+    isPlaying = false;
+    $btnPlay.textContent = 'play';
+  }
+}
+
+$btnPlay.addEventListener('click', () => {
+  if (tagPlaylist.length === 0) return;
+  if (isPlaying) {
+    $audio.pause();
+    isPlaying = false;
+    $btnPlay.textContent = 'play';
+  } else {
+    $audio.play().catch(() => {});
+    isPlaying = true;
+    $btnPlay.textContent = 'pause';
+  }
+});
+
+$btnPrev.addEventListener('click', () => {
+  if (tagPlaylist.length) loadTrack(trackIndex - 1, isPlaying);
+});
+$btnNext.addEventListener('click', () => {
+  if (tagPlaylist.length) loadTrack(trackIndex + 1, isPlaying);
+});
+
+// On track end: advance, stay paused
+$audio.addEventListener('ended', () => {
+  if (tagPlaylist.length) loadTrack(trackIndex + 1);
+});
+
+// ── Lazy-load observer ────────────────────────────────────────
+
+function makeObserver() {
+  if (lazyObserver) lazyObserver.disconnect();
+  lazyObserver = new IntersectionObserver(entries => {
+    for (const e of entries) {
+      if (!e.isIntersecting) continue;
+      const cell = e.target;
+      if (cell.querySelector('img')) continue;
+      const img = document.createElement('img');
+      img.src = CDN_BASE + '/' + encodeURIComponent(cell.dataset.f);
+      img.alt = cell.dataset.f;
+      cell.appendChild(img);
+      lazyObserver.unobserve(cell);
+    }
+  }, { rootMargin: '400px 0px' });
+}
+
+// ── Chunked DOM render ────────────────────────────────────────
+
+function renderBatch() {
+  const end = Math.min(renderIndex + BATCH, visiblePhotos.length);
+  const frag = document.createDocumentFragment();
+  const newCells = [];
+
+  for (let i = renderIndex; i < end; i++) {
+    const cell = document.createElement('div');
+    cell.className = 'cell';
+    cell.dataset.f = visiblePhotos[i];
+    cell.addEventListener('click', () => onCellClick(cell.dataset.f));
+    frag.appendChild(cell);
+    newCells.push(cell);
+  }
+
+  $grid.appendChild(frag);
+  for (const c of newCells) lazyObserver.observe(c);
+
+  renderIndex = end;
+  if (renderIndex < visiblePhotos.length) setTimeout(renderBatch, 0);
+}
+
+function renderPhotos(photos) {
+  $grid.innerHTML = '';
+  visiblePhotos = photos;
+  renderIndex = 0;
+  makeObserver();
+  if (photos.length) renderBatch();
+  updateCount();
+}
+
+// ── Count ─────────────────────────────────────────────────────
+
+function updateCount() {
+  $count.textContent =
+    `${visiblePhotos.length.toLocaleString()} / ${allPhotos.length.toLocaleString()}`;
+}
+
+// ── Filter / tag activation ───────────────────────────────────
+
+function applyFilter() {
+  const term = $filterInput.value.trim().toLowerCase();
+
+  if (!term) {
+    // Tag cleared
+    if (activeTag !== '') {
+      activeTag = '';
+      hidePlayer();
+    }
+    renderPhotos([...allPhotos]);
+    return;
+  }
+
+  // Tag changed
+  if (term !== activeTag) {
+    activeTag = term;
+    // Find matching key in TAG_PLAYLISTS (case-insensitive key lookup)
+    const playlistKey = Object.keys(TAG_PLAYLISTS).find(
+      k => k.toLowerCase() === term
+    );
+    if (playlistKey) {
+      showPlayer(TAG_PLAYLISTS[playlistKey]);
+    } else {
+      hidePlayer();
+    }
+  }
+
+  const filtered = allPhotos.filter(fname => {
+    const tags = photoData[fname] || [];
+    return tags.some(t => t.toLowerCase() === term);
+  });
+  renderPhotos(filtered);
+}
+
+$filterInput.addEventListener('keydown', e => {
+  if (e.key === 'Enter') applyFilter();
+});
+
+// ── Random ────────────────────────────────────────────────────
+
+$btnRandom.addEventListener('click', () => {
+  if (visiblePhotos.length === 0) return;
+  const reshuffled = [...visiblePhotos];
+  shuffleInPlace(reshuffled);
+  renderPhotos(reshuffled);
+});
+
+// ── Grid cell click ───────────────────────────────────────────
+
+function onCellClick(filename) {
+  const index = visiblePhotos.indexOf(filename);
+  if (index >= 0) openModal(index);
+}
+
+// ── Modal: open / close ───────────────────────────────────────
+
+function openModal(index) {
+  if (index < 0 || index >= visiblePhotos.length) return;
+  modalIndex    = index;
+  modalFilename = visiblePhotos[index];
+
+  $modalImg.src              = CDN_BASE + '/' + encodeURIComponent(modalFilename);
+  $suggestInput.value        = '';
+  $suggestStatus.textContent = '';
+  if (statusTimer) { clearTimeout(statusTimer); statusTimer = null; }
+
+  renderModalTags();
+  $modal.style.display = 'flex';
+  modalOpen = true;
+}
+
+function closeModal() {
+  $modal.style.display = 'none';
+  modalOpen     = false;
+  modalFilename = '';
+  modalIndex    = -1;
+  $modalImg.src = '';
+}
+
+// ── Modal: tags (read-only, clickable) ────────────────────────
+
+function renderModalTags() {
+  $modalTagsRow.innerHTML = '';
+  const tags = photoData[modalFilename] || [];
+  if (!tags.length) return;
+
+  tags.forEach((tag, i) => {
+    if (i > 0) $modalTagsRow.appendChild(document.createTextNode(', '));
+    const span = document.createElement('span');
+    span.className = 'modal-tag';
+    span.textContent = tag;
+    span.addEventListener('click', e => {
+      e.stopPropagation();
+      onModalTagClick(tag);
+    });
+    $modalTagsRow.appendChild(span);
+  });
+}
+
+function onModalTagClick(tag) {
+  closeModal();
+  $filterInput.value = tag;
+  applyFilter();
+}
+
+// ── Modal: navigation ─────────────────────────────────────────
+
+function navModal(delta) {
+  if (!modalOpen || visiblePhotos.length === 0) return;
+  let i = modalIndex + delta;
+  if (i < 0) i = visiblePhotos.length - 1;
+  if (i >= visiblePhotos.length) i = 0;
+  openModal(i);
+}
+
+// ── Tag suggestion ────────────────────────────────────────────
+
+$suggestForm.addEventListener('submit', async e => {
+  e.preventDefault();
+
+  const honeypot = $suggestForm.querySelector('input[name="website"]').value;
+  if (honeypot) return;
+
+  const tag = $suggestInput.value.trim();
+  if (!tag || tag.length > 100) {
+    showSuggestStatus('invalid input');
+    return;
+  }
+
+  try {
+    const r = await fetch(SUGGEST_ENDPOINT, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Aleph-Token': SUGGEST_TOKEN,
+      },
+      body: JSON.stringify({ photo: modalFilename, tag, ts: Date.now() }),
+    });
+
+    if (r.ok) {
+      $suggestInput.value = '';
+      showSuggestStatus('etched into memory', 2000);
+    } else if (r.status === 429) {
+      showSuggestStatus('too many suggestions');
+    } else {
+      showSuggestStatus('something went wrong');
+    }
+  } catch {
+    showSuggestStatus('something went wrong');
+  }
+});
+
+function showSuggestStatus(msg, clearAfter) {
+  if (statusTimer) clearTimeout(statusTimer);
+  $suggestStatus.textContent = msg;
+  if (clearAfter) {
+    statusTimer = setTimeout(() => {
+      $suggestStatus.textContent = '';
+      statusTimer = null;
+    }, clearAfter);
+  }
+}
+
+// ── Keyboard ──────────────────────────────────────────────────
+
+document.addEventListener('keydown', e => {
+  if (!modalOpen) return;
+  const inInput = document.activeElement === $suggestInput;
+  switch (e.key) {
+    case 'Escape':
+      e.preventDefault();
+      closeModal();
+      break;
+    case 'ArrowLeft':
+      if (!inInput) { e.preventDefault(); navModal(-1); }
+      break;
+    case 'ArrowRight':
+      if (!inInput) { e.preventDefault(); navModal(1); }
+      break;
+  }
+});
+
+$modalImg.addEventListener('click',      e => e.stopPropagation());
+$modalControls.addEventListener('click', e => e.stopPropagation());
+$modal.addEventListener('click', closeModal);
+
+// ── Init ──────────────────────────────────────────────────────
+
+(async function init() {
+  try {
+    $count.textContent = '…';
+    const r = await fetch(TAGS_URL);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    photoData = await r.json();
+    allPhotos = Object.keys(photoData);
+    shuffleInPlace(allPhotos);
+    renderPhotos([...allPhotos]);
+  } catch (err) {
+    $count.textContent = 'error';
+    console.error('Failed to load tags:', err);
+  }
+})();
+</script>
+</body>
+</html>
