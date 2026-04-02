@@ -11,6 +11,15 @@
       padding: 0;
     }
 
+    html {
+      scrollbar-width: thin;
+      scrollbar-color: #2f73f7 #000;
+    }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #000; }
+    ::-webkit-scrollbar-thumb { background: #2f73f7; }
+
     body {
       background: #000;
       color: #2f73f7;
@@ -86,30 +95,23 @@
       color: #000;
     }
 
-    /* ── Tag player bar ────────────────────────────────────── */
+    /* ── Player controls (inline in control bar) ──────────── */
 
-    #player-bar {
-      position: fixed;
-      top: 37px;
-      left: 0;
-      right: 0;
-      height: 36px;
+    #player-controls {
       display: none; /* shown by JS when active tag has a playlist */
       align-items: center;
       gap: 8px;
-      padding: 0 12px;
-      background: #000;
-      border-bottom: 1px solid #2f73f7;
-      z-index: 99;
     }
 
     /* ── Grid ──────────────────────────────────────────────── */
 
     #grid {
-      margin-top: 37px; /* adjusted by JS when player bar is shown */
+      margin-top: 37px; /* kept current by ResizeObserver */
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(min(200px, 50vw), 1fr));
-      border-left: 1px solid #2f73f7;
+      background: #2f73f7;
+      gap: 1px;
+      padding: 1px;
     }
 
     @media (min-width: 1024px) {
@@ -119,17 +121,16 @@
     }
 
     @media (max-width: 480px) {
-      #control-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      #filter-input {
+      #control-left {
         width: 100%;
       }
 
+      #filter-input {
+        flex: 1;
+      }
+
       #grid {
-        margin-top: 74px; /* extra line on mobile */
+        grid-template-columns: repeat(2, 1fr);
       }
     }
 
@@ -139,8 +140,11 @@
       overflow: hidden;
       cursor: pointer;
       position: relative;
-      border-right: 1px solid #2f73f7;
-      border-bottom: 1px solid #2f73f7;
+    }
+
+    .cell-filler {
+      cursor: default;
+      pointer-events: none;
     }
 
     .cell img {
@@ -242,13 +246,11 @@
   <div id="control-right">
     <button id="btn-random" class="top-btn">random</button>
   </div>
-</div>
-
-<!-- Tag-associated music player — hidden until a tag with a playlist is active -->
-<div id="player-bar">
-  <button id="btn-prev" class="top-btn">prev</button>
-  <button id="btn-play" class="top-btn">play</button>
-  <button id="btn-next" class="top-btn">next</button>
+  <div id="player-controls">
+    <button id="btn-prev" class="top-btn">prev</button>
+    <button id="btn-play" class="top-btn">play</button>
+    <button id="btn-next" class="top-btn">next</button>
+  </div>
 </div>
 
 <div id="grid"></div>
@@ -351,9 +353,10 @@ const BATCH = 200;
 const $grid          = document.getElementById('grid');
 const $filterInput   = document.getElementById('filter-input');
 const $count         = document.getElementById('photo-count');
-const $btnRandom     = document.getElementById('btn-random');
-const $playerBar     = document.getElementById('player-bar');
-const $btnPrev       = document.getElementById('btn-prev');
+const $btnRandom      = document.getElementById('btn-random');
+const $controlBar     = document.getElementById('control-bar');
+const $playerControls = document.getElementById('player-controls');
+const $btnPrev        = document.getElementById('btn-prev');
 const $btnPlay       = document.getElementById('btn-play');
 const $btnNext       = document.getElementById('btn-next');
 const $audio         = document.getElementById('audio');
@@ -406,8 +409,7 @@ function showPlayer(tracks) {
   $audio.src = tagPlaylist[trackIndex].url;
   $audio.load();
   $btnPlay.textContent = 'play';
-  $playerBar.style.display = 'flex';
-  $grid.style.marginTop = '74px';
+  $playerControls.style.display = 'flex';
 }
 
 function hidePlayer() {
@@ -417,8 +419,7 @@ function hidePlayer() {
   trackIndex    = 0;
   isPlaying     = false;
   $btnPlay.textContent = 'play';
-  $playerBar.style.display = 'none';
-  $grid.style.marginTop = '37px';
+  $playerControls.style.display = 'none';
 }
 
 function loadTrack(index, shouldPlay) {
@@ -475,7 +476,7 @@ function makeObserver() {
       cell.appendChild(img);
       lazyObserver.unobserve(cell);
     }
-  }, { rootMargin: '400px 0px' });
+  }, { rootMargin: '200px 0px' });
 }
 
 // ── Chunked DOM render ────────────────────────────────────────
@@ -498,7 +499,25 @@ function renderBatch() {
   for (const c of newCells) lazyObserver.observe(c);
 
   renderIndex = end;
-  if (renderIndex < visiblePhotos.length) setTimeout(renderBatch, 0);
+  if (renderIndex < visiblePhotos.length) {
+    setTimeout(renderBatch, 0);
+  } else {
+    fillLastRow();
+  }
+}
+
+function fillLastRow() {
+  $grid.querySelectorAll('.cell-filler').forEach(f => f.remove());
+  const cols = getComputedStyle($grid).gridTemplateColumns.split(' ').length;
+  const rem = visiblePhotos.length % cols;
+  if (rem === 0) return;
+  const frag = document.createDocumentFragment();
+  for (let i = 0; i < cols - rem; i++) {
+    const filler = document.createElement('div');
+    filler.className = 'cell cell-filler';
+    frag.appendChild(filler);
+  }
+  $grid.appendChild(frag);
 }
 
 function renderPhotos(photos) {
@@ -704,6 +723,12 @@ document.addEventListener('keydown', e => {
 $modalImg.addEventListener('click',      e => e.stopPropagation());
 $modalControls.addEventListener('click', e => e.stopPropagation());
 $modal.addEventListener('click', closeModal);
+
+// ── Layout: keep grid below control bar ──────────────────────
+
+new ResizeObserver(() => {
+  $grid.style.marginTop = $controlBar.offsetHeight + 'px';
+}).observe($controlBar);
 
 // ── Init ──────────────────────────────────────────────────────
 
