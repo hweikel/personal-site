@@ -36,26 +36,6 @@
       z-index: 100;
     }
 
-    @media (min-width: 1024px) {
-      #grid {
-        grid-template-columns: repeat(5, 1fr);
-      }
-    }
-
-    @media (max-width: 480px) {
-      #control-bar {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      #filter-input {
-        width: 100%;
-      }
-
-      #grid {
-        margin-top: 74px; /* extra line on mobile */
-      }
-    }
 
     #control-left {
       display: flex;
@@ -128,6 +108,27 @@
       margin-top: 37px; /* adjusted by JS when player bar is shown */
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+
+    @media (min-width: 1024px) {
+      #grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      #control-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      #filter-input {
+        width: 100%;
+      }
+
+      #grid {
+        margin-top: 74px; /* extra line on mobile */
+      }
     }
 
     .cell {
