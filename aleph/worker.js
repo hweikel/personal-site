@@ -4,7 +4,7 @@
 const VALID_TOKEN = "theproofinthepudding";
 
 const CORS_HEADERS = {
-  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Origin": "https://henryweikel.net",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, X-Aleph-Token",
 };
