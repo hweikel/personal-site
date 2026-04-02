@@ -16,7 +16,6 @@
       color: #2f73f7;
       font-family: monospace;
       font-size: 13px;
-      overflow-x: clip;
     }
 
     /* ── Control bar ───────────────────────────────────────── */
@@ -59,6 +58,7 @@
       font-size: 13px;
       outline: none;
       width: 220px;
+      min-width: 0;
     }
 
     #filter-input::placeholder {
@@ -108,7 +108,7 @@
     #grid {
       margin-top: 37px; /* adjusted by JS when player bar is shown */
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(min(200px, 50vw), 1fr));
     }
 
     @media (min-width: 1024px) {
