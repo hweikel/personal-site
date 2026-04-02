@@ -25,14 +25,36 @@
       top: 0;
       left: 0;
       right: 0;
-      height: 36px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 12px;
+      flex-wrap: wrap;
+      padding: 4px 12px;
+      gap: 4px;
       background: #000;
       border-bottom: 1px solid #2f73f7;
       z-index: 100;
+    }
+
+    @media (min-width: 1024px) {
+      #grid {
+        grid-template-columns: repeat(5, 1fr);
+      }
+    }
+
+    @media (max-width: 480px) {
+      #control-bar {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      #filter-input {
+        width: 100%;
+      }
+
+      #grid {
+        margin-top: 74px; /* extra line on mobile */
+      }
     }
 
     #control-left {
@@ -275,6 +297,15 @@ const TAG_PLAYLISTS = {
   ],
   "grotto": [
     { url: `${BASE_TUNES}/fanfare.mp3` },
+  ],
+  "ian": [
+    { url: `${BASE_TUNES}/vegetables.mp3` },
+  ],
+  "wizard food": [
+    { url: `${BASE_TUNES}/fanfare.mp3` },
+  ],
+  "ortiz": [
+    { url: `${BASE_TUNES}/WHATCH.mp3` },
   ],
   "william": [
     { url: `${BASE_TUNES}/caodong.mp3` },
