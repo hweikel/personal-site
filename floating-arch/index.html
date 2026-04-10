@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>henry weikel</title>
+<link href="https://fonts.googleapis.com/css2?family=IM+Fell+English:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  /* Geometry: viewBox 1000x1500, VP=(500,760), back wall t=0.45
+     back corners TL(225,342) TR(775,342) BR(775,1167) BL(225,1167)
+     arch outer x=321-679 r=179 legs y=1167-645; inner (f=0.1) x=339-661 r=161 legs y=1126-657 */
+  :root { --bg:#000; --ink:#dcdcdc; --ink-mid:#aaaaaa; }
+  html,body { margin:0; padding:0; height:100%; background:var(--bg); overflow:hidden; font-family:'IM Fell English',Georgia,serif; }
+  .stage { width:100vw; height:100vh; display:block; }
+  svg { fill:none; }
+  .frame     { stroke:#000; stroke-width:1.5; }
+  .back-edge { stroke:#000; stroke-width:1.0; }
+  .arch-edge { stroke:#000; stroke-width:1.5; }
+  .tile-line { stroke:#000; stroke-width:0.75; }
+</style>
+</head>
+<body>
+<svg class="stage" viewBox="-1300 -1450 3600 4400" preserveAspectRatio="xMidYMid meet">
+
+  <!-- Side & top walls, floor outline -->
+  <polygon points="0,0 225,342 225,1167 0,1500"        fill="var(--ink)" class="back-edge"/>
+  <polygon points="1000,0 775,342 775,1167 1000,1500"  fill="var(--ink)" class="back-edge"/>
+  <polygon points="0,0 1000,0 775,342 225,342"         fill="var(--ink)" class="back-edge"/>
+  <polygon points="0,1500 1000,1500 775,1167 225,1167" class="back-edge"/>
+
+  <!-- JS-generated floor tiles and grid lines inserted here -->
+  <g id="tiles"></g>
+
+  <!-- Back wall with arch cutout -->
+  <path d="M 225,342 L 775,342 L 775,1167 L 225,1167 Z
+           M 321,1167 L 321,645 A 179,179 0 0 1 679,645 L 679,1167 Z"
+        fill="var(--ink)" fill-rule="evenodd" class="back-edge"/>
+
+  <!-- Arch thickness faces (outer projected f=0.1 toward VP=(500,760)) -->
+  <polygon fill="var(--ink)" class="back-edge" points="321,1167 321,645 339,657 339,1126"/>
+  <polygon fill="var(--ink)" class="back-edge" points="679,1167 679,645 661,657 661,1126"/>
+  <path d="M 321,645 A 179,179 0 0 1 679,645 L 661,657 A 161,161 0 0 0 339,657 Z"
+        fill="var(--ink)" class="back-edge"/>
+  <!-- Floor sill: no fill so checkerboard shows through -->
+  <polygon fill="none" class="back-edge" points="321,1167 679,1167 661,1126 339,1126"/>
+
+  <!-- JS-generated sill tiles and lines — must be after back wall to paint over it -->
+  <g id="sill-tiles"></g>
+
+  <!-- Inner arch outline -->
+  <path d="M 339,1126 L 339,657 A 161,161 0 0 1 661,657 L 661,1126" class="arch-edge"/>
+  <!-- Outer arch outline -->
+  <path d="M 321,1167 L 321,645 A 179,179 0 0 1 679,645 L 679,1167" class="arch-edge"/>
+
+  <!-- Front wall thickness band -->
+  <path d="M -60,-60 L 1060,-60 L 1060,1560 L -60,1560 Z
+           M 0,0 L 1000,0 L 1000,1500 L 0,1500 Z"
+        fill="var(--ink)" fill-rule="evenodd" stroke="none"/>
+  <rect x="-60" y="-60" width="1120" height="1620" fill="none" class="frame"/>
+  <rect x="0" y="0" width="1000" height="1500" fill="none" class="frame"/>
+
+</svg>
+
+<script>
+(function () {
+  const NS  = 'http://www.w3.org/2000/svg';
+  const INK = 'var(--ink)';
+
+  // Geometry constants
+  const VPx = 500, VPy = 760;
+  const frontY = 1500, backY = 1167;
+  const tDepth = 0.45;
+  const nCols = 14, nRows = 16;
+
+  // Arch opening bounds
+  const archOXL = 321, archOXR = 679;          // outer (y=1167)
+  const archIXL = 339, archIXR = 661, archIY = 1126; // inner (y=1126)
+
+  // x on a VP-converging ray at a given y
+  function xAt(xFront, y) {
+    return xFront + (VPx - xFront) * (frontY - y) / (frontY - VPy);
+  }
+
+  // Column front-x positions: 0, 1000/14, 2000/14, ..., 1000
+  const colFronts = Array.from({length: nCols + 1}, (_, i) => 1000 * i / nCols);
+
+  // Row y-values: equal τ spacing, τ = k/nRows, y = VPy + (frontY-VPy)*(1 - tDepth*τ)
+  const rowYs = Array.from({length: nRows + 1}, (_, k) =>
+    k === 0 ? frontY : VPy + (frontY - VPy) * (1 - tDepth * k / nRows)
+  );
+  // rowYs[0]=1500, rowYs[16]≈1167
+
+  // grid[r][c] = screen-x at row r, column c
+  const grid = rowYs.map(y => colFronts.map(xf => xAt(xf, y)));
+
+  // Extra row for arch inner floor (y=1126)
+  const sillRow = colFronts.map(xf => xAt(xf, archIY));
+
+  const g  = document.getElementById('tiles');
+  const gs = document.getElementById('sill-tiles');
+
+  function addTo(target, el) { target.appendChild(el); }
+
+  function poly(target, pts, fill, cls) {
+    const el = document.createElementNS(NS, 'polygon');
+    el.setAttribute('points', pts.map(([x, y]) => `${x.toFixed(1)},${y.toFixed(1)}`).join(' '));
+    el.setAttribute('fill', fill);
+    if (cls) el.setAttribute('class', cls);
+    addTo(target, el);
+  }
+
+  function ln(target, x1, y1, x2, y2, cls) {
+    const el = document.createElementNS(NS, 'line');
+    el.setAttribute('x1', x1.toFixed(1)); el.setAttribute('y1', y1.toFixed(1));
+    el.setAttribute('x2', x2.toFixed(1)); el.setAttribute('y2', y2.toFixed(1));
+    el.setAttribute('class', cls);
+    addTo(target, el);
+  }
+
+  // ── Filled tiles: main floor ──────────────────────────────────────────────
+  const INK_MID = 'var(--ink-mid)';
+  for (let r = 0; r < nRows; r++) {
+    for (let c = 0; c < nCols; c++) {
+      const fill = (r + c) % 2 === 0 ? INK : INK_MID;
+      poly(g, [
+        [grid[r][c],     rowYs[r]],
+        [grid[r][c+1],   rowYs[r]],
+        [grid[r+1][c+1], rowYs[r+1]],
+        [grid[r+1][c],   rowYs[r+1]],
+      ], fill, null);
+    }
+  }
+
+  // ── Grid lines: main floor transverse ────────────────────────────────────
+  for (let r = 1; r <= nRows; r++) {
+    ln(g, grid[r][0], rowYs[r], grid[r][nCols], rowYs[r], 'tile-line');
+  }
+
+  // ── Grid lines: main floor longitudinal ──────────────────────────────────
+  for (let c = 1; c < nCols; c++) {
+    ln(g, colFronts[c], frontY, grid[nRows][c], backY, 'tile-line');
+  }
+
+  // ── Filled tiles: arch floor sill — drawn into #sill-tiles (after back wall) ──
+  for (let c = 0; c < nCols; c++) {
+    const sillFill = (nRows + c) % 2 === 0 ? INK : INK_MID;
+    const xt0 = grid[nRows][c],  xt1 = grid[nRows][c + 1];
+    const xb0 = sillRow[c],      xb1 = sillRow[c + 1];
+    if (xt1 <= archOXL || xt0 >= archOXR) continue;
+    const ct0 = Math.max(xt0, archOXL), ct1 = Math.min(xt1, archOXR);
+    const cb0 = Math.max(xb0, archIXL), cb1 = Math.min(xb1, archIXR);
+    if (ct0 >= ct1 || cb0 >= cb1) continue;
+    poly(gs, [[ct0, backY], [ct1, backY], [cb1, archIY], [cb0, archIY]], sillFill, null);
+  }
+
+  // ── Grid lines: arch sill longitudinal (within arch opening) ─────────────
+  for (let c = 1; c < nCols; c++) {
+    const xt = grid[nRows][c];
+    if (xt <= archOXL || xt >= archOXR) continue;
+    ln(gs, xt, backY, sillRow[c], archIY, 'tile-line');
+  }
+
+  // ── Grid lines: arch sill transverse (inner edge) ────────────────────────
+  ln(gs, archIXL, archIY, archIXR, archIY, 'tile-line');
+})();
+</script>
+</body>
+</html>
