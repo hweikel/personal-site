@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>wundertest</title>
+<style>
+body {
+  margin: 0;
+  background: #0f1b2e;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.wunderkammer {
+  max-width: 1300px;
+  width: auto;
+  height: 90vh;
+  display: block;
+}
+.img-wrap {
+  position: relative;
+  height: 90vh;
+}
+/* clickable hotspot over the face sketch (top-right of image) */
+.hotspot-face {
+  position: absolute;
+  top: 2%;
+  left: 70%;
+  width: 26%;
+  height: 33%;
+  cursor: pointer;
+}
+/* modal */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.82);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+.modal.open {
+  display: flex;
+}
+.modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: block;
+  pointer-events: none;
+}
+</style>
+</head>
+<body>
+  <div class="img-wrap">
+    <img class="wunderkammer" src="../wunderweb.jpg" alt="">
+    <div class="hotspot-face" id="hotspot-face"></div>
+  </div>
+
+  <div class="modal" id="modal">
+    <img src="../face.jpg" alt="face">
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    document.getElementById('hotspot-face').addEventListener('click', () => {
+      modal.classList.add('open');
+    });
+    modal.addEventListener('click', () => {
+      modal.classList.remove('open');
+    });
+  </script>
+</body>
+</html>
