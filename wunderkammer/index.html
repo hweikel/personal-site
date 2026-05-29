@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dancing Star Press</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main>
+
+    <!-- horizontal (desktop) -->
+    <div class="img-wrap img-wrap-h">
+      <img class="wunderkammer-horizontal"
+           src="wunderkammer-horizontal.jpg"
+           alt="">
+      <div class="hotspot" data-src="face-horizontal.jpeg"
+           style="top:3%;left:68%;width:27%;height:34%"></div>
+      <div class="hotspot" data-src="biz-card-horizontal.jpeg"
+           style="top:38%;left:57%;width:20%;height:17%"></div>
+      <div class="hotspot" data-src="arch.jpeg"
+           style="top:28%;left:10%;width:25%;height:40%"></div>
+    </div>
+
+    <!-- vertical (mobile) -->
+    <div class="img-wrap img-wrap-v">
+      <img class="wunderkammer-vertical"
+           src="wunderkammer-vertical.jpg"
+           alt="">
+      <div class="hotspot" data-src="face-vertical.jpeg"
+           style="top:43%;left:52%;width:45%;height:20%"></div>
+      <div class="hotspot" data-src="biz-card-vertical.jpeg"
+           style="top:46%;left:3%;width:41%;height:10%"></div>
+      <div class="hotspot" data-src="arch.jpeg"
+           style="top:3%;left:3%;width:46%;height:20%"></div>
+    </div>
+
+  </main>
+
+  <div class="modal" id="modal">
+    <img id="modal-img" src="" alt="">
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const modalImg = document.getElementById('modal-img');
+
+    document.querySelectorAll('.hotspot').forEach(h => {
+      h.addEventListener('click', () => {
+        modalImg.src = h.dataset.src;
+        modal.classList.add('open');
+      });
+    });
+
+    modal.addEventListener('click', () => modal.classList.remove('open'));
+  </script>
+</body>
+</html>

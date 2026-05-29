@@ -1,0 +1,77 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  background: #2a3a52;
+}
+
+body {
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+main {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ── image wrappers ── */
+.img-wrap {
+  position: relative;
+  line-height: 0;
+}
+
+.img-wrap-h {
+  display: block;
+  width: 100vw;
+}
+
+.img-wrap-v {
+  display: none;
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .img-wrap-h { display: none; }
+  .img-wrap-v { display: block; }
+}
+
+/* ── images ── */
+.wunderkammer-horizontal,
+.wunderkammer-vertical {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* ── hotspots ── */
+.hotspot {
+  position: absolute;
+  cursor: pointer;
+}
+
+/* ── modal ── */
+.modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.modal.open {
+  display: flex;
+}
+
+.modal img {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: block;
+  pointer-events: none;
+}
