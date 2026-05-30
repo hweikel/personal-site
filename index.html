@@ -1,81 +1,107 @@
 <!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<title>HW</title>
-		<style type="text/css">
-			body {
-				background-color: black;
-				margin: 0;
-			}
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>HW</title>
+  <link rel="stylesheet" href="wunderkammer/style.css">
+</head>
+<body>
+  <main>
 
-			.the-expanse-of-night {
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				min-height: 100vh;
-			}
+    <!--horiz-->
+    <div class="img-wrap img-wrap-h">
+      <img class="wunderkammer-horizontal"
+           src="wunderkammer/wunderkammer-horizontal.jpg"
+           alt="">
+      <!--moebius-->
+      <div class="hotspot" data-href="/bookcovers"
+           style="top:10%;left:28.5%;width:6.5%;height:6.5%"></div>
+      <!--biz-->
+      <div class="hotspot" data-src="wunderkammer/biz-card-horizontal.jpg"
+           style="top:48%;left:68%;width:16%;height:25%"></div>
+      <!--scotland-arch-->
+      <div class="hotspot" data-srcs="wunderkammer/scotland0.jpeg,wunderkammer/scotland1.jpg,wunderkammer/scotland2.jpg,wunderkammer/scotland3.jpg,wunderkammer/scotland5.jpg,wunderkammer/scotland6.jpg,wunderkammer/scotland7.jpg,wunderkammer/scotland9.jpg,wunderkammer/scotland10.jpg"
+           style="top:38.5%;left:16%;width:12%;height:36.5%"></div>
+      <!--arch-marks-->
+      <div class="hotspot" data-href="https://dancingstar.press"
+           style="top:76%;left:12%;width:2.5%;height:4.5%"></div>
+      <div class="hotspot" data-href="https://onshoreleave.com"
+           style="top:76%;left:17.5%;width:3.5%;height:4.5%"></div>
+      <div class="hotspot" data-href="https://starlightconvenience.net"
+           style="top:76%;left:23.5%;width:3.5%;height:4.5%"></div>
+      <!--luxi-->
+      <div class="hotspot" data-src="wunderkammer/luxi.jpg"
+           style="top:29.5%;left:42%;width:4%;height:5%"></div>
+    </div>
 
-			.window-beyond {
-				text-align: center;
-				display: flex;
-				align-items: center;
-				justify-content: center;
-				flex-direction: column;
-  			    width: 150px;
-				height: 300px;
-				padding: 100px;
-				background-color: #fcd564;
-    			font-size: 18px; 
-			}
+    <!--vert-->
+    <div class="img-wrap img-wrap-v">
+      <img class="wunderkammer-vertical"
+           src="wunderkammer/wunderkammer-vertical.jpg"
+           alt="">
+     <!--moebius-->
+      <div class="hotspot" data-href="/bookcovers"
+           style="top:87.75%;left:39%;width:12%;height:5%"></div>
+      <!--biz-->
+      <div class="hotspot" data-src="wunderkammer/biz-card-vertical.jpg"
+           style="top:48%;left:15%;width:28.5%;height:7%"></div>
+     <div class="hotspot" data-src="wunderkammer/biz-card-vertical.jpg"
+           style="top:64%;left:67%;width:28.5%;height:7%"></div>
+      <!--scotland-arch-->
+      <div class="hotspot" data-srcs="wunderkammer/scotland0.jpeg,wunderkammer/scotland1.jpg,wunderkammer/scotland2.jpg,wunderkammer/scotland3.jpg,wunderkammer/scotland5.jpg,wunderkammer/scotland6.jpg,wunderkammer/scotland7.jpg,wunderkammer/scotland9.jpg,wunderkammer/scotland10.jpg"
+           style="top:9.75%;left:24%;width:23%;height:22.5%"></div>
+      <!--arch-marks-->
+      <div class="hotspot" data-href="https://dancingstar.press"
+           style="top:33%;left:16%;width:5.5%;height:2.5%"></div>
+      <div class="hotspot" data-href="https://onshoreleave.com"
+           style="top:33%;left:26.75%;width:6%;height:2.5%"></div>
+      <div class="hotspot" data-href="https://starlightconvenience.net"
+           style="top:33%;left:38.5%;width:6%;height:2.5%"></div>
+      <!--luxi-->
+      <div class="hotspot" data-src="wunderkammer/luxi.jpg"
+           style="top:64%;left:57.5%;width:6.5%;height:2.75%"></div>
+    </div>
 
-			.window-beyond img {
-				width: 120px;
-			}
+  </main>
 
-			a {
-				color: black;
-				text-decoration: none;
-			}
+  <div class="modal" id="modal">
+    <div class="modal-inner" id="modal-inner"></div>
+  </div>
 
-			.list {
-				margin-top: 25px;
-				line-height: 24px;
-			}
+  <script>
+    const modal = document.getElementById('modal');
+    const modalInner = document.getElementById('modal-inner');
 
-			@media (max-width: 768px) {
-			.window-beyond {
-				width: 100px;
-				height: 200px;
-				padding: 66px;
-				font-size: 12px;
-			}
+    function openModal(srcs) {
+      modalInner.innerHTML = '';
+      srcs.forEach(src => {
+        const img = document.createElement('img');
+        img.src = src;
+        modalInner.appendChild(img);
+      });
+      modal.classList.add('open');
+      document.body.classList.add('modal-open');
+    }
 
-			.window-beyond img {
-				width: 80px;
-			}
+    function closeModal() {
+      modal.classList.remove('open');
+      document.body.classList.remove('modal-open');
+    }
 
-			.list {
-				margin-top: 16px;
-				line-height: 16px;
-			}
-		}
-		</style>
-	</head>
-	<body>
-		<div class="the-expanse-of-night">
-			<div class="window-beyond">
-				<img src="arch.svg"></img>
+    document.querySelectorAll('.hotspot').forEach(h => {
+      h.addEventListener('click', () => {
+        if (h.dataset.href) {
+          window.open(h.dataset.href, '_blank', 'noopener noreferrer');
+        } else if (h.dataset.srcs) {
+          openModal(h.dataset.srcs.split(','));
+        } else if (h.dataset.src) {
+          openModal([h.dataset.src]);
+        }
+      });
+    });
 
-				<div class="list">
-					<a href="about">(about)</a><br/>
-					<a href="climbing">(climbing)</a><br/>
-					<a href="bookrecs">(book recs)</a><br/>
-					<a href="bookcovers">(book covers)</a><br/>
-				</div>
-			</div>
-		</div>
-	</body>
+    modal.addEventListener('click', closeModal);
+  </script>
+</body>
 </html>
-
