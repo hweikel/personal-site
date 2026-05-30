@@ -18,7 +18,6 @@ main {
   min-height: 100dvh;
 }
 
-/* ── image wrappers ── */
 .img-wrap {
   position: relative;
   line-height: 0;
@@ -39,7 +38,6 @@ main {
   .img-wrap-v { display: block; }
 }
 
-/* ── images ── */
 .wunderkammer-horizontal,
 .wunderkammer-vertical {
   display: block;
@@ -47,18 +45,15 @@ main {
   height: auto;
 }
 
-/* ── hotspots ── */
 .hotspot {
   position: absolute;
   cursor: pointer;
 }
 
-/* ── body lock when modal open ── */
 body.modal-open {
   overflow: hidden;
 }
 
-/* ── modal ── */
 .modal {
   position: fixed;
   inset: 0;
