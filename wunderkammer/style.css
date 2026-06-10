@@ -1,13 +1,20 @@
+:root {
+  --tree-bark: #C47F70;
+  --custard: #faed8f;
+  --paper-blue: #657D9D;
+  --night: #2a3a52;
+}
+
 html, body {
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
-  background: #2a3a52;
+  background: var(--night);
 }
 
 body {
   min-height: 100vh;
   min-height: 100dvh;
+  overflow-x: clip;
 }
 
 main {
@@ -50,6 +57,41 @@ main {
   cursor: pointer;
 }
 
+.hotspot.circle {
+  border-radius: 50%;
+}
+
+.marker {
+  content: '?';
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: clamp(0.7rem, 1.2vw, 1rem);
+  position: absolute;
+  top: -0.25em;
+  left: -0.17em;
+  color: var(--custard);
+  pointer-events: none;
+}
+
+.hotspot:hover .marker {
+  color: var(--tree-bark);
+}
+
+.about-link {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  color: var(--custard);
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  text-decoration: none;
+  z-index: 10;
+  line-height: 1;
+}
+
+.about-link:hover {
+  color: var(--tree-bark);
+}
+
 body.modal-open {
   overflow: hidden;
 }
@@ -57,18 +99,30 @@ body.modal-open {
 .modal {
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.85);
+  background: var(--custard);
   z-index: 100;
   overflow-y: auto;
-  cursor: pointer;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.25s ease, visibility 0.25s ease;
+  cursor: zoom-out;
+  display: none;
 }
 
 .modal.open {
-  opacity: 1;
-  visibility: visible;
+  display: block;
+}
+
+.modal-close {
+  position: fixed;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: none;
+  border: none;
+  color: var(--tree-bark);
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1;
+  cursor: pointer;
+  z-index: 101;
+  padding: 0;
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .modal-inner {
@@ -83,8 +137,31 @@ body.modal-open {
 }
 
 .modal-inner img {
-  max-width: 90vw;
-  max-height: 90vh;
+  width: auto;
+  height: auto;
+  max-width: 45vw;
+  max-height: 45vh;
   display: block;
   flex-shrink: 0;
+}
+
+.about-handwriting {
+  width: 300px !important;
+  height: auto !important;
+}
+
+.modal-inner img.wide {
+  max-width: 75vw;
+  max-height: 75vh;
+}
+
+@media (max-width: 768px) {
+  .modal-inner img {
+    max-width: 90vw;
+    max-height: 90vh;
+  }
+
+  .about-handwriting {
+    width: 75vw !important;
+  }
 }
