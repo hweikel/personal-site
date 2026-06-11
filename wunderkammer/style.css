@@ -62,9 +62,8 @@ main {
 }
 
 .marker {
-  content: '?';
   font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
-  font-size: clamp(0.7rem, 1.2vw, 1rem);
+  font-size: clamp(0.7rem, 1.5vw, 1.4rem);
   position: absolute;
   top: -0.25em;
   left: -0.17em;

@@ -39,16 +39,23 @@
 			}
 
 			.layout {
-				display: flex;
-				flex-direction: row;
-				align-items: flex-start;
+				display: grid;
+				grid-template-columns: 3fr 2fr;
+				grid-template-areas:
+					"map header"
+					"map content";
+				grid-template-rows: auto 1fr;
 				gap: 2em;
+				align-items: start;
 			}
 
 			.map-col {
-				flex: 0 0 60vw;
-				width: 60vw;
+				grid-area: map;
 				position: relative;
+			}
+
+			.page-header {
+				grid-area: header;
 			}
 
 			.map-col img {
@@ -154,10 +161,11 @@
 			#pin-23 { top: 50.5%;  left: 44%;    }
 			#pin-24 { top: 49%;  left: 41%;    }
 			#pin-25 { top: 73.5%;  left: 74%;    }
+			#pin-26 { top: 82%; left: 55% }
+			#pin-27 { top: 37%; left: 31%; }
 
 			.text-col {
-				flex: 0 0 33vw;
-				width: 33vw;
+				grid-area: content;
 			}
 
 			@media (max-width: 768px) {
@@ -167,19 +175,22 @@
 				}
 
 				.layout {
-					flex-direction: column;
+					grid-template-columns: 1fr;
+					grid-template-areas:
+						"header"
+						"map"
+						"content";
 				}
 
 				.map-col {
-					flex: none;
 					width: 95vw;
 				}
 
+				.page-header,
 				.text-col {
-					flex: none;
-					width: 100%;
 					padding: 0 2em;
 					box-sizing: border-box;
+					width: 100%;
 				}
 			}
 		</style>
@@ -214,12 +225,16 @@
 				<div id="pin-23" class="box" data-text="The inexplicable little Russian-looking structure behind Gilman covers HVAC maintenance paths: lots of amusing areas within."></div>
 				<div id="pin-24" class="box" data-text="Rooftop access from the northeast corner of the top floor of Latimer. The first door is often unlocked but the second will swing shut behind you."></div>
 				<div id="pin-25" class="box" data-text="Pull up onto the concrete overhang above the back door to Zellerbach. Using the grooves in the wall for leverage, stretch around the corner and up onto the playhouse roof. It's straight up from there, but starting from the roof's northeast hip makes for an easier climb; the surface itself is slippery but the metal ridges are very forgiving holds. The short retaining wall at the top leads to a flat, open space above the playhouse, the first of many. Follow the ladders through the trench and keep in mind your visibility to the south. Of the many rooftops you will encounter, the final one is the most thrilling -- lost in the fog layer with the constant drone of HVAC."></div>
+				<div id="pin-26" class="box" data-text="An interstate highway of a fallen eucalyptus crosses the southern fork of Strawberry Creek, connecting the Grinnell Pathway to the Eucalyptus Grove."></div>
+				<div id="pin-27" class="box" data-text="A honeycomb retaining wall in the Foothill parking lot offers a near-vertical ascent to a nice stand of oak and eucalyptus flanking the course of the Big C trail."></div>
 			</div>
-			<div class="text-col">
+			<div class="page-header">
 				<h1>Tree Climbing</h1>
 				<div class="intro">
 					<p>A list of favorite trees and the rooftops and window sills to which they offer access. Coordinates tend toward inaccuracy, so just look around.</p>
 				</div>
+			</div>
+			<div class="text-col">
 				<div class="text">
 					<h2>Berkeley, California</h2>
 						<ul>
@@ -353,6 +368,10 @@
 
 							<br />
 
+							<li class="coordinates">&lt;N 37°52'16.0"&nbsp;&nbsp;W 122°15'50.2"&gt;</li>
+							<div class="caption">A honeycomb retaining wall in the Foothill parking lot offers a near-vertical ascent to a nice stand of oak and eucalyptus flanking the course of the Big C trail.</div>
+
+							<br />
 
 							<li class="coordinates">&lt;N 37°53'04.8"&nbsp;&nbsp;W 122°15'45.9"&gt;</li>
 							<div class="caption">The hill by the Berryman Reservoir entrance to Cordonices Park has an expansive oak that leans over Euclid Avenue. The highest central branch extends over the road.</div>
