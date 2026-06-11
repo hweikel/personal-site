@@ -136,31 +136,22 @@ body.modal-open {
 }
 
 .modal-inner img {
+  max-width: 75vw;
+  max-height: 60vh;
   width: auto;
   height: auto;
-  max-width: 45vw;
-  max-height: 45vh;
   display: block;
   flex-shrink: 0;
 }
 
 .about-handwriting {
-  width: 300px !important;
-  height: auto !important;
+  max-width: min(400px, 80vw);
+  max-height: none;
 }
 
-.modal-inner img.wide {
-  max-width: 75vw;
-  max-height: 75vh;
-}
-
-@media (max-width: 768px) {
+@media (min-width: 769px) {
   .modal-inner img {
-    max-width: 90vw;
+    max-width: 20vw;
     max-height: 90vh;
-  }
-
-  .about-handwriting {
-    width: 75vw !important;
   }
 }
