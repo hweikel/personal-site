@@ -94,6 +94,7 @@ main {
 
 body.modal-open {
   overflow: hidden;
+  background: var(--custard);
 }
 
 .modal {
