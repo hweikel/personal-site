@@ -24,7 +24,7 @@
          style="top:37.5%;left:68.75%;width:14.75%;height:18.75%"><span class="marker"style="top:-2%;left:-3%;width:1%;height:1%">*</span></a>
       <!--scotland-arch-->
       <a class="hotspot" href="scotland0.jpeg" target="_blank"
-         data-srcs="scotland-handwriting.webp,scotland0.jpeg,scotland1.jpg,scotland2.jpg,scotland3.jpg,scotland4.jpg,scotland5.jpg,scotland6.jpg,scotland7.jpg,scotland9.jpg,scotland10.jpg,scotland-north.jpg"
+         data-wide="skip-first" data-srcs="scotland-handwriting.webp,scotland0.jpeg,scotland1.jpg,scotland2.jpg,scotland3.jpg,scotland4.jpg,scotland5.jpg,scotland6.jpg,scotland7.jpg,scotland9.jpg,scotland10.jpg,scotland-north.jpg"
          style="top:30%;left:16%;width:12%;height:28.25%;border-radius:50% 50% 0 0/25% 25% 0 0"><span class="marker"style="top:5%;left:5%;width:1%;height:1%">*</span></a>
       <!--arch-marks-->
       <a class="hotspot circle" href="https://dancingstar.press" target="_blank" rel="noopener noreferrer"
@@ -56,7 +56,7 @@
          style="top:52.2%;left:67.25%;width:27.25%;height:5.5%"><span class="marker"style="top:-7%;left:-5%;width:1%;height:1%">*</span></a>
       <!--scotland-arch-->
       <a class="hotspot" href="scotland0.jpeg" target="_blank"
-         data-srcs="scotland-handwriting.webp,scotland0.jpeg,scotland1.jpg,scotland-north.jpg,scotland2.jpg,scotland3.jpg,scotland4.jpg,scotland5.jpg,scotland6.jpg,scotland7.jpg,scotland9.jpg,scotland10.jpg"
+         data-wide="skip-first" data-srcs="scotland-handwriting.webp,scotland0.jpeg,scotland1.jpg,scotland-north.jpg,scotland2.jpg,scotland3.jpg,scotland4.jpg,scotland5.jpg,scotland6.jpg,scotland7.jpg,scotland9.jpg,scotland10.jpg"
          style="top:8%;left:24%;width:23%;height:18.25%;border-radius:50% 50% 0 0/25% 25% 0 0"><span class="marker"style="top:3%;left:3%;width:1%;height:1%">*</span></a>
       <!--arch-marks-->
       <a class="hotspot circle" href="https://dancingstar.press" target="_blank" rel="noopener noreferrer"
@@ -91,10 +91,10 @@
 
     function openModal(srcs, wide) {
       modalInner.innerHTML = '';
-      srcs.forEach(src => {
+      srcs.forEach((src, i) => {
         const img = document.createElement('img');
         img.src = src;
-        if (wide) img.classList.add('wide');
+        if (wide === 'true' || (wide === 'skip-first' && i > 0)) img.classList.add('wide');
         modalInner.appendChild(img);
       });
       modal.classList.add('open');

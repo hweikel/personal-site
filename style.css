@@ -85,6 +85,7 @@ main {
   text-decoration: none;
   z-index: 10;
   line-height: 1;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.6);
 }
 
 .about-link:hover {
@@ -98,6 +99,7 @@ body.modal-open {
 .modal {
   position: fixed;
   inset: 0;
+  padding-bottom: env(safe-area-inset-bottom);
   background: var(--custard);
   z-index: 100;
   overflow-y: auto;
@@ -153,5 +155,9 @@ body.modal-open {
   .modal-inner img {
     max-width: 20vw;
     max-height: 90vh;
+  }
+
+  .modal-inner img.wide {
+    max-width: 40vw;
   }
 }
