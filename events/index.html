@@ -3,56 +3,65 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Project x Potluck</title>
+<title>Animated Shorts Mini Film Festival</title>
 <style>
+  @font-face {
+    font-family: 'IM Fell English';
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url('../fonts/im-fell-english-400.woff2') format('woff2');
+  }
+
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
     min-height: 100vh;
-    background: #fff;
+    background: #000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     padding: 2rem;
-    font-family: Georgia, serif;
-    color: #2a4a3a;
+    font-family: 'IM Fell English', Georgia, serif;
+    color: #b3181d;
     text-align: center;
   }
 
-  img {
-    max-width: min(360px, 90vw);
-    display: block;
-    margin-bottom: 2rem;
-  }
-
   .title {
-    font-size: 1.75rem;
+    font-size: 2rem;
     font-weight: normal;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.08em;
+    line-height: 1.3;
     margin-bottom: 1.5rem;
   }
 
-  .description {
-    font-size: 1.25rem;
-    line-height: 1.9;
-    opacity: 0.75;
-    margin-top: 2rem;
+  img {
+    width: min(340px, 90vw);
+    display: block;
     margin-bottom: 1.5rem;
   }
 
   .details {
     font-size: 1.25rem;
     line-height: 1.9;
-    opacity: 0.75;
+    margin-bottom: 1.5rem;
+  }
+
+  .description {
+    font-size: 1.25rem;
+    line-height: 1.9;
+    opacity: 0.85;
+    max-width: 34ch;
+    margin-bottom: 1.5rem;
   }
 </style>
 </head>
 <body>
-  <img src="aksinin.jpg" alt="">
-  <p class="title">Project x Potluck</p>
-  <p class="details">Saturday, April 25th · 6pm<br>1082 Penn. Ave Unit 303</p>
-  <p class="description">Price of entry: a potluck dish or a personal project to share.<br>All projects are welcome, including:<br>skits, body modifications,<br>garments, "artificial intelligence",<br>industrial music, and more.</p>
-  <p class="details">Let us know if you need anything<br>to share your project. We have wifi,<br>a projector/speaker, a stage, a spotlight,<br>and a captive audience.<br><br>+1s welcome.</p>
+  <p class="title">Animated Shorts<br>Mini Film Festival</p>
+  <img src="quay.jpg" alt="The Brothers Quay at work on Street of Crocodiles">
+  <p class="details">Sunday, July 26<br>Snacks 7pm onwards, films start 8pm</p>
+  <p class="description">Showing a mix of animated shorts by <b>Masaaki Yuasa</b>, <b>The Brothers Quay</b>, <b>Jan Svankmajer</b>, <b>Yuri Norstein</b>, and more. Open to suggestions!</p>
+  <p class="details">1082 Pennsylvania Ave #303<br>805 331 5513</p>
 </body>
 </html>
