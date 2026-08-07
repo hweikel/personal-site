@@ -14,7 +14,6 @@
       <img class="wunderkammer-horizontal"
            src="wunderkammer-horizontal-no-logos-expanded-map.jpg"
            alt="">
-      <a href="/about" class="about-link" id="about-link-h">&#x2014; ?</a>
       <!--moebius-->
       <a class="hotspot circle" href="/bookcovers" target="_blank" rel="noopener noreferrer"
          style="top:7.5%;left:28.25%;width:6.5%;height:6.5%"><span class="marker"style="top:1%;left:1%;width:1%;height:1%">*</span></a>
@@ -43,7 +42,6 @@
       <img class="wunderkammer-vertical"
            src="wunderkammer-vertical-no-logos-extended-folded-map.jpg"
            alt="">
-     <a href="/about" class="about-link" id="about-link-v">&#x2014; ?</a>
      <!--moebius-->
       <a class="hotspot circle" href="/bookcovers" target="_blank" rel="noopener noreferrer"
          style="top:71.5%;left:39%;width:12%;height:4.1%"><span class="marker" style="top:1%;left:1%;width:1%;height:1%">*</span></a>
@@ -77,17 +75,9 @@
     <div class="modal-inner" id="modal-inner"></div>
   </div>
 
-  <div class="modal" id="about-modal">
-    <button class="modal-close" aria-label="Close">X</button>
-    <div class="modal-inner">
-      <img src="about-handwriting.webp" class="about-handwriting" alt="About">
-    </div>
-  </div>
-
   <script>
     const modal = document.getElementById('modal');
     const modalInner = document.getElementById('modal-inner');
-    const aboutModal = document.getElementById('about-modal');
 
     function openModal(srcs, wide) {
       modalInner.innerHTML = '';
@@ -103,7 +93,6 @@
 
     function closeModal() {
       modal.classList.remove('open');
-      aboutModal.classList.remove('open');
       document.body.classList.remove('modal-open');
     }
 
@@ -118,14 +107,6 @@
       });
     });
 
-    document.querySelectorAll('.about-link').forEach(el => {
-      el.addEventListener('click', e => {
-        e.preventDefault();
-        aboutModal.classList.add('open');
-        document.body.classList.add('modal-open');
-      });
-    });
-
     document.querySelectorAll('.modal-close').forEach(btn => {
       btn.addEventListener('click', e => {
         e.stopPropagation();
@@ -134,7 +115,6 @@
     });
 
     modal.addEventListener('click', closeModal);
-    aboutModal.addEventListener('click', closeModal);
   </script>
 </body>
 </html>
